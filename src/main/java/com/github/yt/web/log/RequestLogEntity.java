@@ -17,7 +17,6 @@ public class RequestLogEntity implements Serializable {
     private String userAgent;
 
     private String classMethodName;
-    private String apiOperation;
     private String headerParams;
     private String urlParams;
     private String requestBody;
@@ -66,15 +65,6 @@ public class RequestLogEntity implements Serializable {
 
     public RequestLogEntity setClassMethodName(String classMethodName) {
         this.classMethodName = classMethodName;
-        return this;
-    }
-
-    public String getApiOperation() {
-        return apiOperation;
-    }
-
-    public RequestLogEntity setApiOperation(String apiOperation) {
-        this.apiOperation = apiOperation;
         return this;
     }
 

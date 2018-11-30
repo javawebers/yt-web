@@ -4,8 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.github.yt.YtWebConfig;
 import com.github.yt.commons.exception.BaseException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 @Order(200)
 @ControllerAdvice
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
-	public static Logger logger = LogManager.getLogger(PackageResponseBodyAdvice.class);
+	private static Logger logger = LoggerFactory.getLogger(PackageResponseBodyAdvice.class);
 
 	// 记录异常的threadLocal
 	public static ThreadLocal<Exception> exceptionThreadLocal = new ThreadLocal<>();
@@ -46,7 +47,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 	public void handleExceptions(final Exception e, HandlerMethod handlerMethod, HttpServletResponse response) throws Exception {
 		Exception se = ExceptionUtils.knownException(e);
 		exceptionThreadLocal.set(se);
-		logger.error(se);
+		logger.error(se.getMessage(), se);
 		response.addHeader("Content-type", "text/html;charset=UTF-8");
 		Boolean beforeBodyWrite = beforeBodyWriteThreadLocal.get();
 		if (beforeBodyWrite != null) {

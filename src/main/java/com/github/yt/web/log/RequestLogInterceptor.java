@@ -3,7 +3,6 @@ package com.github.yt.web.log;
 import com.alibaba.fastjson.JSONObject;
 import com.github.yt.YtWebConfig;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,11 +100,6 @@ public class RequestLogInterceptor implements HandlerInterceptor, WebMvcConfigur
 		requestLogEntity.setServletPath(servletPath);
 		requestLogEntity.setUserAgent(request.getHeader("User-Agent"));
 
-		ApiOperation apiOperation = handlerMethod.getMethod().getAnnotation(ApiOperation.class);
-
-		if (apiOperation != null) {
-			requestLogEntity.setApiOperation(apiOperation.value());
-		}
 		requestLogEntity.setClassMethodName(handlerMethod.getMethod().toString());
 		Enumeration<String> headerNames = request.getHeaderNames();
 		Map<String, String> headerMap = new HashMap<>();

@@ -8,7 +8,7 @@ public class ExceptionUtils {
 
     /**
      * 已知异常转换
-     * @param e e
+     * @param e
      * @return
      */
     public static Exception knownException(Exception e) {

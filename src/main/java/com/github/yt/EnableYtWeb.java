@@ -1,7 +1,6 @@
 package com.github.yt;
 
 
-import com.github.yt.web.SwaggerConfig;
 import com.github.yt.web.log.RequestLogFilter;
 import com.github.yt.web.log.RequestLogInterceptor;
 import com.github.yt.web.result.CleanResponseThreadLocalInterceptor;
@@ -15,10 +14,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({
-        PackageResponseBodyAdvice.class,
         YtWebConfig.class,
+        PackageResponseBodyAdvice.class,
         CleanResponseThreadLocalInterceptor.class,
-        SwaggerConfig.class, JsonResultConfig.class,
+        JsonResultConfig.class,
         RequestLogFilter.class,
         RequestLogInterceptor.class,
 })

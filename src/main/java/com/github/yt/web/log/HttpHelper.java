@@ -18,7 +18,7 @@ public class HttpHelper {
     /**
      * 获取请求Body
      *
-     * @param request request
+     * @param request
      * @return
      */
     public static String getBodyString(ServletRequest request) {
