@@ -18,8 +18,8 @@ public class HttpHelper {
     /**
      * 获取请求Body
      *
-     * @param request
-     * @return
+     * @param request request
+     * @return string
      */
     public static String getBodyString(ServletRequest request) {
         StringBuilder sb = new StringBuilder();

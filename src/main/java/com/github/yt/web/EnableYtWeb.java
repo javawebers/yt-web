@@ -1,4 +1,4 @@
-package com.github.yt;
+package com.github.yt.web;
 
 
 import com.github.yt.web.log.RequestLogFilter;

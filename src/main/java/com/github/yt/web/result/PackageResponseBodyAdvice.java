@@ -2,7 +2,7 @@ package com.github.yt.web.result;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.github.yt.YtWebConfig;
+import com.github.yt.web.YtWebConfig;
 import com.github.yt.commons.exception.BaseException;
 
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 	@ExceptionHandler
 	@PackageResponseBody(false)
 	public void handleExceptions(final Exception e, HandlerMethod handlerMethod, HttpServletResponse response) throws Exception {
-		Exception se = ExceptionUtils.knownException(e);
+		Exception se = e;
 		exceptionThreadLocal.set(se);
 		logger.error(se.getMessage(), se);
 		response.addHeader("Content-type", "text/html;charset=UTF-8");

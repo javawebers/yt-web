@@ -1,6 +1,6 @@
 package com.github.yt.web.log;
 
-import com.github.yt.YtWebConfig;
+import com.github.yt.web.YtWebConfig;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;

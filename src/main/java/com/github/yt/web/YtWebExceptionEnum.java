@@ -1,10 +1,10 @@
-package com.github.yt.exception;
+package com.github.yt.web;
 
 /**
  * 异常枚举
  * @author liujiasheng
  */
-public enum CoreExceptionEnum {
+public enum YtWebExceptionEnum {
 
     // error
     CODE_79("实例化resultConfig对象异常，{0}"),
@@ -12,11 +12,11 @@ public enum CoreExceptionEnum {
 
     public String message;
     public String description;
-    CoreExceptionEnum(String message) {
+    YtWebExceptionEnum(String message) {
         this.message = message;
     }
 
-    CoreExceptionEnum(String message, String description) {
+    YtWebExceptionEnum(String message, String description) {
         this.message = message;
         this.description = description;
     }

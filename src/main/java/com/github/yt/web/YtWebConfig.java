@@ -1,4 +1,4 @@
-package com.github.yt;
+package com.github.yt.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

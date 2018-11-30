@@ -1,7 +1,9 @@
 package com.github.yt.web.result;
 
-import com.github.yt.YtWebConfig;
+import com.github.yt.commons.exception.BaseErrorException;
+import com.github.yt.web.YtWebConfig;
 import com.github.yt.commons.exception.BaseException;
+import com.github.yt.web.YtWebExceptionEnum;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,16 +11,15 @@ import org.springframework.stereotype.Component;
  *
  * @author liujiasheng
  */
-@Component
 public class HttpResultHandler {
     private static BaseResultConfig resultConfig;
-    public static BaseResultConfig getResultConfig(){
+    private static BaseResultConfig getResultConfig(){
         if (resultConfig == null) {
             try {
                 Class<?> aClass = Class.forName(YtWebConfig.resultClass);
                 resultConfig = (BaseResultConfig) aClass.newInstance();
             } catch (Exception e) {
-                throw new RuntimeException("实例化resultConfig对象异常," + YtWebConfig.resultClass, e);
+                throw new BaseErrorException(YtWebExceptionEnum.CODE_79, YtWebConfig.resultClass, e);
             }
         }
         return resultConfig;
@@ -38,21 +39,11 @@ public class HttpResultHandler {
 
     private static HttpResultEntity getSuccessMoreResultBody(Object result, boolean withMore, Object moreResult) {
         HttpResultEntity resultBody = new HttpResultEntity();
-        try {
-            Class<?> aClass = Class.forName(YtWebConfig.resultClass);
-            BaseResultConfig resultConfig = (BaseResultConfig) aClass.newInstance();
-            resultBody.put(resultConfig.getErrorCodeField(), resultConfig.getDefaultSuccessCode());
-            resultBody.put(resultConfig.getMessageField(), resultConfig.getDefaultSuccessMessage());
-            resultBody.put(resultConfig.getResultField(), result);
-            if (withMore) {
-                resultBody.put(resultConfig.getMoreResultField(), moreResult);
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        resultBody.put(getResultConfig().getErrorCodeField(), getResultConfig().getDefaultSuccessCode());
+        resultBody.put(getResultConfig().getMessageField(), getResultConfig().getDefaultSuccessMessage());
+        resultBody.put(getResultConfig().getResultField(), result);
+        if (withMore) {
+            resultBody.put(getResultConfig().getMoreResultField(), moreResult);
         }
         return resultBody;
     }
@@ -73,9 +64,7 @@ public class HttpResultHandler {
             resultBody.put(getResultConfig().getErrorCodeField(), getResultConfig().getDefaultErrorCode());
             resultBody.put(getResultConfig().getMessageField(), getResultConfig().getDefaultErrorMessage());
         }
-
         return resultBody;
-
     }
 
 }

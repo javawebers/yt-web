@@ -1,7 +1,7 @@
 package com.github.yt.web.log;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.yt.YtWebConfig;
+import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
