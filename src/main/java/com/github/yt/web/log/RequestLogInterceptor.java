@@ -3,7 +3,6 @@ package com.github.yt.web.log;
 import com.alibaba.fastjson.JSONObject;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
-import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -108,10 +107,10 @@ public class RequestLogInterceptor implements HandlerInterceptor, WebMvcConfigur
 			String header = request.getHeader(headerName);
 			headerMap.put(headerName, header);
 		}
-		if (MapUtils.isNotEmpty(headerMap)) {
+		if (!headerMap.isEmpty()) {
 			requestLogEntity.setHeaderParams(JSONObject.toJSONString(headerMap));
 		}
-		if (MapUtils.isNotEmpty(request.getParameterMap())) {
+		if (request.getParameterMap() != null && !request.getParameterMap().isEmpty()) {
 			requestLogEntity.setUrlParams(JSONObject.toJSONString(request.getParameterMap()));
 		}
 		if (YtWebConfig.requestLogBody) {
