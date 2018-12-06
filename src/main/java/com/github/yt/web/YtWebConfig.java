@@ -12,8 +12,6 @@ public class YtWebConfig {
     // 分页
     public static String pageNoName;
     public static String pageSizeName;
-    public static String pageTotalCountName;
-    public static String pageDataName;
 
     // 请求日志
     // 是否记录请求日志
@@ -46,15 +44,6 @@ public class YtWebConfig {
         YtWebConfig.pageSizeName = pageSizeName;
     }
 
-    @Value("${yt.page.pageTotalCountName:totalCount}")
-    public void setPageTotalCountName(String pageTotalCountName) {
-        YtWebConfig.pageTotalCountName = pageTotalCountName;
-    }
-
-    @Value("${yt.page.pageDataName:data}")
-    public void setPageDataName(String pageDataName) {
-        YtWebConfig.pageDataName = pageDataName;
-    }
     @Value("${yt.request.requestLog:true}")
     public void setRequestLog(boolean requestLog) {
         YtWebConfig.requestLog = requestLog;

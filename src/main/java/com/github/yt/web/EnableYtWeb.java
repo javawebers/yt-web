@@ -3,6 +3,7 @@ package com.github.yt.web;
 
 import com.github.yt.web.log.RequestLogFilter;
 import com.github.yt.web.log.RequestLogInterceptor;
+import com.github.yt.web.query.QueryControllerAspect;
 import com.github.yt.web.result.CleanResponseThreadLocalInterceptor;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.result.JsonResultConfig;
@@ -20,6 +21,7 @@ import java.lang.annotation.*;
         JsonResultConfig.class,
         RequestLogFilter.class,
         RequestLogInterceptor.class,
+        QueryControllerAspect.class,
 })
 public @interface EnableYtWeb {
 }
