@@ -6,6 +6,10 @@ package com.github.yt.web;
  */
 public enum YtWebExceptionEnum {
 
+    // business
+    CODE_11("参数错误:{0}"),
+    CODE_12("参数错误:{0}"),
+
     // error
     CODE_79("实例化resultConfig对象异常，{0}"),
     ;

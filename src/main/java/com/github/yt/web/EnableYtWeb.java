@@ -4,9 +4,7 @@ package com.github.yt.web;
 import com.github.yt.web.log.RequestLogFilter;
 import com.github.yt.web.log.RequestLogInterceptor;
 import com.github.yt.web.query.QueryControllerAspect;
-import com.github.yt.web.result.CleanResponseThreadLocalInterceptor;
-import com.github.yt.web.result.PackageResponseBodyAdvice;
-import com.github.yt.web.result.JsonResultConfig;
+import com.github.yt.web.result.*;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -29,6 +27,7 @@ import java.lang.annotation.*;
         RequestLogFilter.class,
         RequestLogInterceptor.class,
         QueryControllerAspect.class,
+        ValidatorExceptionConverter.class,
 })
 public @interface EnableYtWeb {
 }
