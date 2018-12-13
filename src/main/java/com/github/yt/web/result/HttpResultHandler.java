@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 public class HttpResultHandler {
     private static BaseResultConfig resultConfig;
-    private static BaseResultConfig getResultConfig(){
+    public static BaseResultConfig getResultConfig(){
         if (resultConfig == null) {
             try {
                 Class<?> aClass = Class.forName(YtWebConfig.resultClass);
