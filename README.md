@@ -11,7 +11,8 @@
     自动设置分页信息到查询条件类中。可配置pageSize和pageNo参数属性。
 * #### 记录请求日志
     可配置在请求返回时输出请求日志，包含请求参数（包含header）和返回结果信息。
-#使用教程
+
+# 使用教程
 * ##  maven引入yt-web
     ```xml
     <dependency>
@@ -202,7 +203,7 @@
         "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
     }
     ```
-    * ### 分页相关配置
+    * ### 请求日志相关配置
     application.properties中指定
     ```properties
     ## 是否记录请求日志
