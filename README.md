@@ -14,6 +14,7 @@
     可配置在请求返回时输出请求日志，包含请求参数（包含header）和返回结果信息。
 
 # 使用教程
+可参考```https://github.com/javawebers/yt-web-example```
 * ##  maven引入yt-web
     ```xml
     <dependency>
