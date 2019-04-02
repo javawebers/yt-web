@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class YtWebConfig {
-    public static String baseEntityValueClass;
     public static boolean packageResponseBody;
     public static String resultClass;
 
@@ -18,11 +17,6 @@ public class YtWebConfig {
     public static boolean requestLog;
     // 如果记录日志是否记录post等的body内容，记录body内容在单元测试时会有问题，取不到body的值
     public static boolean requestLogBody;
-
-    @Value("${yt.entity.baseEntityValue:com.github.yt.mybatis.domain.DefaultBaseEntityValue}")
-    public void setBaseEntityValueClass(String baseEntityValueClass) {
-        YtWebConfig.baseEntityValueClass = baseEntityValueClass;
-    }
 
     @Value("${yt.result.packageResponseBody:true}")
     public void setPackageResponseBody(boolean packageResponseBody) {
