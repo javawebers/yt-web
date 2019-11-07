@@ -132,16 +132,20 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 //
 		// 判断方法配置(默认true)
 		PackageResponseBody methodPackageResponseBody = returnType.getMethod().getAnnotation(PackageResponseBody.class);
-		if (methodPackageResponseBody != null && !methodPackageResponseBody.value()) {
-			return body;
-		}
-		// 判断类配置(默认true)
 		PackageResponseBody classPackageResponseBody = returnType.getDeclaringClass().getAnnotation(PackageResponseBody.class);
-		if (classPackageResponseBody != null && !classPackageResponseBody.value()) {
-			return body;
-		}
-		// 判断全局配置(默认true)
-		if (!YtWebConfig.packageResponseBody) {
+
+		if (methodPackageResponseBody != null) {
+			// 判断方法配置(默认true)
+			if(!methodPackageResponseBody.value()) {
+				return body;
+			}
+		} else if (classPackageResponseBody != null) {
+			// 判断类配置(默认true)
+			if(!classPackageResponseBody.value()) {
+				return body;
+			}
+		} else if (!YtWebConfig.packageResponseBody) {
+			// 判断类配置(默认true)
 			return body;
 		}
 
