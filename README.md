@@ -1,4 +1,4 @@
-# yt-web
+# 5分钟上手yt-web！！！
 
 # 介绍
 基于spring mvc的前后端交互通用框架，适用于前后端分离系统的后端与前端交互部分。
@@ -16,6 +16,7 @@
 # 使用教程
 可参考```https://github.com/javawebers/yt-web-example```
 * ##  maven引入yt-web
+    在```https://mvnrepository.com/artifact/com.github.javawebers/yt-web```找到最新版引入
     ```xml
     <dependency>
         <groupId>com.github.javawebers</groupId>
@@ -24,7 +25,7 @@
     </dependency>
     ```
 * ##  启用yt-web
-    在spring boot的启动类上加 ```@EnableYtWeb``` 如下：
+    在spring boot的启动类上加```@EnableYtWeb```注解，如下：
     ```java
     @SpringBootApplication
     @RestController
