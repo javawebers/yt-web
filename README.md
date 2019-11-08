@@ -16,13 +16,30 @@
 # 使用教程
 可参考```https://github.com/javawebers/yt-web-example```
 * ##  maven引入yt-web
-    在```https://mvnrepository.com/artifact/com.github.javawebers/yt-web```找到最新版引入
+    在`https://mvnrepository.com/artifact/com.github.javawebers/yt-web`找到最新版引入（示例引入版本为开发版）
     ```xml
-    <dependency>
-        <groupId>com.github.javawebers</groupId>
-        <artifactId>yt-web</artifactId>
-        <version>1.3.1</version>
-    </dependency>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.0.RELEASE</version>
+        <relativePath/>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.javawebers</groupId>
+            <artifactId>yt-web</artifactId>
+            <version>1.4.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
     ```
 * ##  启用yt-web
     在spring boot的启动类上加```@EnableYtWeb```注解，如下：
