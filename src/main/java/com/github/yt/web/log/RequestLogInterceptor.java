@@ -5,14 +5,10 @@ import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
@@ -26,20 +22,11 @@ import java.util.Map;
  * 记录请求日志
  * @author 刘加胜
  */
-@Component
-public class RequestLogInterceptor implements HandlerInterceptor, WebMvcConfigurer {
+public class RequestLogInterceptor implements HandlerInterceptor {
 
 	public static ThreadLocal<RequestLogEntity> requestLogThreadLocal = new ThreadLocal<>();
 
 	private Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
-	@Resource
-	private RequestLogInterceptor requestLogInterceptor;
-
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(requestLogInterceptor)
-				.order(200).excludePathPatterns("/error");
-	}
 
 	/**
 	 * 读取post的body参数

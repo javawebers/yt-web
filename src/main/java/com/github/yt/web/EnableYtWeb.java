@@ -2,9 +2,10 @@ package com.github.yt.web;
 
 
 import com.github.yt.web.log.RequestLogFilter;
-import com.github.yt.web.log.RequestLogInterceptor;
 import com.github.yt.web.query.QueryControllerAspect;
-import com.github.yt.web.result.*;
+import com.github.yt.web.result.JsonResultConfig;
+import com.github.yt.web.result.PackageResponseBodyAdvice;
+import com.github.yt.web.result.ValidatorExceptionConverter;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -22,10 +23,9 @@ import java.lang.annotation.*;
 @Import({
         YtWebConfig.class,
         PackageResponseBodyAdvice.class,
-        CleanResponseThreadLocalInterceptor.class,
+        YtWebMvcConfigurer.class,
         JsonResultConfig.class,
         RequestLogFilter.class,
-        RequestLogInterceptor.class,
         QueryControllerAspect.class,
         ValidatorExceptionConverter.class,
 })
