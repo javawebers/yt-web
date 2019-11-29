@@ -59,7 +59,7 @@ public class QueryControllerAspect {
                 methodSet.add(currentMethod);
                 Class[] classes = methodSignature.getParameterTypes();
                 for (int i = 0; i < classes.length; i++) {
-                    if (classes[i].equals(Query.class)) {
+                    if (Query.class.isAssignableFrom(classes[i])) {
                         queryMethodMap.put(currentMethod, i);
                     }
                 }
