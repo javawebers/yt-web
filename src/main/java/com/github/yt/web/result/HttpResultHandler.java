@@ -63,6 +63,7 @@ public class HttpResultHandler {
         } else {
             resultBody.put(getResultConfig().getErrorCodeField(), getResultConfig().getDefaultErrorCode());
             resultBody.put(getResultConfig().getMessageField(), getResultConfig().getDefaultErrorMessage());
+            resultBody.put(getResultConfig().getResultField(), null);
         }
         return resultBody;
     }

@@ -2,10 +2,9 @@ package com.github.yt.web.result;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.github.yt.commons.exception.BaseException;
 import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.web.YtWebConfig;
-import com.github.yt.commons.exception.BaseException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +24,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 
@@ -91,6 +92,12 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             resultBody = HttpResultHandler.getErrorSimpleResultBody((BaseException) se);
         } else {
             resultBody = HttpResultHandler.getErrorSimpleResultBody();
+        }
+        // 返回异常堆栈到前端
+        if (YtWebConfig.returnStackTrace) {
+            StringWriter sw = new StringWriter();
+            se.printStackTrace(new PrintWriter(sw, true));
+            resultBody.put("stackTrace", sw);
         }
         response.setStatus(200);
         response.addHeader("Content-type", "application/json;charset=UTF-8");

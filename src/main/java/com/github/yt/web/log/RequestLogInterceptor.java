@@ -132,6 +132,8 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 			requestLogEntity.setError(false);
 		}
 
-		logger.info(JSONObject.toJSONString(requestLogEntity));
+		if(logger.isDebugEnabled()) {
+			logger.debug(JSONObject.toJSONString(requestLogEntity));
+		}
 	}
 }

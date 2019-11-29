@@ -18,6 +18,13 @@ public class YtWebConfig {
     // 如果记录日志是否记录post等的body内容，记录body内容在单元测试时会有问题，取不到body的值
     public static boolean requestLogBody;
 
+    // 是否将异常栈信息返回到前端
+    public static boolean returnStackTrace;
+
+    @Value("${yt.result.returnStackTrace:false}")
+    public void setReturnStackTrace(boolean returnStackTrace) {
+        YtWebConfig.returnStackTrace = returnStackTrace;
+    }
     @Value("${yt.result.packageResponseBody:true}")
     public void setPackageResponseBody(boolean packageResponseBody) {
         YtWebConfig.packageResponseBody = packageResponseBody;
