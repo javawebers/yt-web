@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * 请求日志实体类
+ *
  * @author liujiasheng
  */
 public class RequestLogEntity implements Serializable {
@@ -27,7 +28,7 @@ public class RequestLogEntity implements Serializable {
     private String errorStackTrace;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
-    @JSONField(format= "yyyy-MM-dd HH:mm:ss.SSS")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss.SSS")
     private Date requestTime;
     private Integer invokingTime;
 

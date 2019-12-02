@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * 是否记录请求日志，默认记录
+ *
  * @author liujiasheng
  */
 @Target({ElementType.TYPE, ElementType.METHOD})

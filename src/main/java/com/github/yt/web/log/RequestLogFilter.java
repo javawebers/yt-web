@@ -11,6 +11,7 @@ import java.io.IOException;
 /**
  * 记录请求日志的filter
  * 对于post请求的body中内容只能读取一次，将post的内容设置成可重复读取
+ *
  * @author liujiasheng
  */
 @WebFilter
@@ -23,7 +24,7 @@ public class RequestLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (YtWebConfig.requestLog && YtWebConfig.requestLogBody) {
-            HttpServletRequest httpServletRequest = (HttpServletRequest)request;
+            HttpServletRequest httpServletRequest = (HttpServletRequest) request;
             if ("POST".equalsIgnoreCase(httpServletRequest.getMethod())) {
                 // 防止流读取一次后就没有了, 所以需要将流继续写出去
                 ServletRequest requestWrapper = new RequestWrapper(httpServletRequest);

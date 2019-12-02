@@ -2,6 +2,7 @@ package com.github.yt.web;
 
 /**
  * 异常枚举
+ *
  * @author liujiasheng
  */
 public enum YtWebExceptionEnum {
@@ -16,6 +17,7 @@ public enum YtWebExceptionEnum {
 
     public String message;
     public String description;
+
     YtWebExceptionEnum(String message) {
         this.message = message;
     }

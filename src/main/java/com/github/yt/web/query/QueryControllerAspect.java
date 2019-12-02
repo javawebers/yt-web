@@ -1,6 +1,6 @@
 package com.github.yt.web.query;
 
-import com.github.yt.commons.query.Query;
+import com.github.yt.commons.query.PageQuery;
 import com.github.yt.web.YtWebConfig;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -59,7 +59,7 @@ public class QueryControllerAspect {
                 methodSet.add(currentMethod);
                 Class[] classes = methodSignature.getParameterTypes();
                 for (int i = 0; i < classes.length; i++) {
-                    if (Query.class.isAssignableFrom(classes[i])) {
+                    if (PageQuery.class.isAssignableFrom(classes[i])) {
                         queryMethodMap.put(currentMethod, i);
                     }
                 }
@@ -69,10 +69,10 @@ public class QueryControllerAspect {
                 HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
                 String pageNoStr = request.getParameter(YtWebConfig.pageNoName);
                 String pageSizeStr = request.getParameter(YtWebConfig.pageSizeName);
-                Query query = (Query) proceedingJoinPoint.getArgs()[queryMethodMap.get(currentMethod)];
+                PageQuery pageQuery = (PageQuery) proceedingJoinPoint.getArgs()[queryMethodMap.get(currentMethod)];
                 int pageSizeNum;
                 try {
-                    pageSizeNum = (pageSizeStr == null || pageSizeStr.isEmpty())? 10 : Integer.valueOf(pageSizeStr);
+                    pageSizeNum = (pageSizeStr == null || pageSizeStr.isEmpty()) ? 10 : Integer.valueOf(pageSizeStr);
                 } catch (NumberFormatException e) {
                     pageSizeNum = 10;
                 }
@@ -82,8 +82,8 @@ public class QueryControllerAspect {
                 } catch (NumberFormatException e) {
                     pageNoNum = 1;
                 }
-                query.makePageNo(pageNoNum);
-                query.makePageSize(pageSizeNum);
+                pageQuery.makePageNo(pageNoNum);
+                pageQuery.makePageSize(pageSizeNum);
             }
         } catch (Exception e) {
             e.printStackTrace();

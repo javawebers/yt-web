@@ -25,6 +25,7 @@ public class YtWebConfig {
     public void setReturnStackTrace(boolean returnStackTrace) {
         YtWebConfig.returnStackTrace = returnStackTrace;
     }
+
     @Value("${yt.result.packageResponseBody:true}")
     public void setPackageResponseBody(boolean packageResponseBody) {
         YtWebConfig.packageResponseBody = packageResponseBody;
@@ -49,6 +50,7 @@ public class YtWebConfig {
     public void setRequestLog(boolean requestLog) {
         YtWebConfig.requestLog = requestLog;
     }
+
     @Value("${yt.request.requestLogBody:false}")
     public void setRequestLogBody(boolean requestLogBody) {
         YtWebConfig.requestLogBody = requestLogBody;

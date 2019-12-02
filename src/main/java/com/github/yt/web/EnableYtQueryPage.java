@@ -10,6 +10,7 @@ import java.lang.annotation.*;
  * 开启分页参数传入功能
  * 分页参数传入到Query对象中
  * 将传入参数的
+ *
  * @author liujiasheng
  */
 @Target(ElementType.TYPE)
