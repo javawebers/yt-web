@@ -2,6 +2,7 @@ package com.github.yt.web;
 
 import com.github.yt.commons.exception.BaseAccidentException;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
+import com.github.yt.web.result.PackageResponseBody;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -59,6 +60,13 @@ public class YtWetDemoApplication {
     // 统一异常处理，已知异常（自定义异常）
     @GetMapping("test4")
     public void testBusinessException() {
+        throw new BaseAccidentException(MyBusinessExceptionEnum.CODE_1001, "没有权限");
+    }
+
+    // 统一异常处理，已知异常（自定义异常）
+    @GetMapping("test5")
+    @PackageResponseBody(false)
+    public void test5() {
         throw new BaseAccidentException(MyBusinessExceptionEnum.CODE_1001, "没有权限");
     }
 

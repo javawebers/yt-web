@@ -64,7 +64,6 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     public void handleExceptions(final Exception e, HandlerMethod handlerMethod, HttpServletResponse response) throws Exception {
         Exception se = convertToKnownException(e);
         exceptionThreadLocal.set(se);
-        logger.error(se.getMessage(), se);
         response.addHeader("Content-type", "text/html;charset=UTF-8");
         Boolean beforeBodyWrite = beforeBodyWriteThreadLocal.get();
         if (beforeBodyWrite != null) {
@@ -86,6 +85,9 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             // 判断全局配置(默认true)
             throw e;
         }
+
+        // 当不向上抛异常时主动打印异常
+        logger.error(se.getMessage(), se);
 
         HttpResultEntity resultBody;
         if (se instanceof BaseException) {
