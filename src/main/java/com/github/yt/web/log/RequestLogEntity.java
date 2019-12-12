@@ -14,11 +14,13 @@ import java.util.Date;
 public class RequestLogEntity implements Serializable {
 
     private String ipAddress;
-    private String servletPath;
     private String userAgent;
 
     private String classMethodName;
     private String headerParams;
+    // 问号之前
+    private String requestURI;
+    // 问好之后
     private String urlParams;
     private String requestBody;
     private String responseBody;
@@ -32,6 +34,14 @@ public class RequestLogEntity implements Serializable {
     private Date requestTime;
     private Integer invokingTime;
 
+    public String getRequestURI() {
+        return requestURI;
+    }
+
+    public RequestLogEntity setRequestURI(String requestURI) {
+        this.requestURI = requestURI;
+        return this;
+    }
 
     public String getUserAgent() {
         return userAgent;
@@ -42,14 +52,6 @@ public class RequestLogEntity implements Serializable {
         return this;
     }
 
-    public String getServletPath() {
-        return servletPath;
-    }
-
-    public RequestLogEntity setServletPath(String servletPath) {
-        this.servletPath = servletPath;
-        return this;
-    }
 
     public String getIpAddress() {
         return ipAddress;

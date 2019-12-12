@@ -84,12 +84,11 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         requestLogThreadLocal.set(new RequestLogEntity());
         RequestLogEntity requestLogEntity = requestLogThreadLocal.get();
         requestLogEntity.setRequestTime(new Date());
-        String servletPath = request.getServletPath();
         requestLogEntity.setIpAddress(getIpAddress(request));
-        requestLogEntity.setServletPath(servletPath);
+        requestLogEntity.setRequestURI(request.getRequestURI());
         requestLogEntity.setUserAgent(request.getHeader("User-Agent"));
-
         requestLogEntity.setClassMethodName(handlerMethod.getMethod().toString());
+
         Enumeration<String> headerNames = request.getHeaderNames();
         Map<String, String> headerMap = new HashMap<>();
         while (headerNames.hasMoreElements()) {
