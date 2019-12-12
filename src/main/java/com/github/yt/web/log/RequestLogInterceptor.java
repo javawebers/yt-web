@@ -73,14 +73,27 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        if (!YtWebConfig.requestLog) {
-            return true;
-        }
+
+        /// 判断是否记录日志
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        RequestLog requestLog = handlerMethod.getMethodAnnotation(RequestLog.class);
-        if (requestLog != null && !requestLog.value()) {
+        // 判断方法配置(默认true)
+        RequestLog methodRequestLog = handlerMethod.getMethodAnnotation(RequestLog.class);
+        RequestLog classRequestLog = handlerMethod.getBeanType().getAnnotation(RequestLog.class);
+        if (methodRequestLog != null) {
+            // 判断方法配置(默认true)
+            if (!methodRequestLog.value()) {
+                return true;
+            }
+        } else if (classRequestLog != null) {
+            // 判断类配置(默认true)
+            if (!classRequestLog.value()) {
+                return true;
+            }
+        } else if (!YtWebConfig.requestLog) {
+            // 判断类配置(默认true)
             return true;
         }
+
         requestLogThreadLocal.set(new RequestLogEntity());
         RequestLogEntity requestLogEntity = requestLogThreadLocal.get();
         requestLogEntity.setRequestTime(new Date());

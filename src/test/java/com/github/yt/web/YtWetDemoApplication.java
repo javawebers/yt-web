@@ -2,6 +2,7 @@ package com.github.yt.web;
 
 import com.github.yt.commons.exception.BaseAccidentException;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
+import com.github.yt.web.log.RequestLog;
 import com.github.yt.web.result.PackageResponseBody;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,6 +20,7 @@ import java.util.Map;
 @RestController
 @EnableYtWeb
 @EnableSwagger2
+@RequestLog
 public class YtWetDemoApplication {
     public static void main(String[] args) {
         SpringApplication.run(YtWetDemoApplication.class, args);
@@ -26,11 +28,13 @@ public class YtWetDemoApplication {
 
     // 自动包装返回体1
     @GetMapping("test1")
+    @RequestLog
     public void testAutoPackage1() {
     }
 
     // 自动包装返回体2
     @GetMapping("test2")
+    @RequestLog(false)
     public Map testAutoPackage2() {
         Map result = new HashMap<>();
         result.put("key222", "value222");

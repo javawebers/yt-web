@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -145,7 +146,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         }
 //
         // 判断方法配置(默认true)
-        PackageResponseBody methodPackageResponseBody = returnType.getMethod().getAnnotation(PackageResponseBody.class);
+        PackageResponseBody methodPackageResponseBody = Objects.requireNonNull(returnType.getMethod()).getAnnotation(PackageResponseBody.class);
         PackageResponseBody classPackageResponseBody = returnType.getDeclaringClass().getAnnotation(PackageResponseBody.class);
 
         if (methodPackageResponseBody != null) {
