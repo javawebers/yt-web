@@ -55,6 +55,44 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
     private ApplicationContext applicationContext;
 
+
+    public static void setExceptionThreadLocal(Exception e) {
+        exceptionThreadLocal.set(e);
+    }
+
+    public static void removeExceptionThreadLocal() {
+        exceptionThreadLocal.remove();
+    }
+
+    public static Exception getExceptionThreadLocal() {
+        return exceptionThreadLocal.get();
+    }
+
+    public static void setResultEntityThreadLocal(Object entity) {
+        resultEntityThreadLocal.set(entity);
+    }
+
+    public static void removeResultEntityThreadLocal() {
+        resultEntityThreadLocal.remove();
+    }
+
+    public static Object getResultEntityThreadLocal() {
+        return resultEntityThreadLocal.get();
+    }
+
+
+    public static void setBeforeBodyWriteThreadLocal(Boolean e) {
+        beforeBodyWriteThreadLocal.set(e);
+    }
+
+    public static void removeBeforeBodyWriteThreadLocal() {
+        beforeBodyWriteThreadLocal.remove();
+    }
+
+    public static Boolean getBeforeBodyWriteThreadLocal() {
+        return beforeBodyWriteThreadLocal.get();
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;

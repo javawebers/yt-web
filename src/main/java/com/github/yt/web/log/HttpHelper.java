@@ -8,10 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 /**
- * Created with antnest-platform
- * User: chenyuan
- * Date: 12/24/14
- * Time: 10:39 AM
+ * @author sheng
  */
 public class HttpHelper {
 

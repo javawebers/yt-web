@@ -19,7 +19,7 @@ public class RequestLogEntity implements Serializable {
     private String classMethodName;
     private String headerParams;
     // 问号之前
-    private String requestURI;
+    private String requestUri;
     // 问好之后
     private String urlParams;
     private String requestBody;
@@ -34,12 +34,12 @@ public class RequestLogEntity implements Serializable {
     private Date requestTime;
     private Integer invokingTime;
 
-    public String getRequestURI() {
-        return requestURI;
+    public String getRequestUri() {
+        return requestUri;
     }
 
-    public RequestLogEntity setRequestURI(String requestURI) {
-        this.requestURI = requestURI;
+    public RequestLogEntity setRequestUri(String requestUri) {
+        this.requestUri = requestUri;
         return this;
     }
 

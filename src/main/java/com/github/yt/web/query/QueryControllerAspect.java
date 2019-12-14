@@ -38,9 +38,6 @@ public class QueryControllerAspect {
     private static Set<Method> methodSet = new HashSet<>();
     private static Map<Method, Integer> queryMethodMap = new HashMap<>();
 
-    /*
-     * Controller切入点
-     */
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) || " +
             "@annotation(org.springframework.web.bind.annotation.GetMapping) || " +
             "@annotation(org.springframework.web.bind.annotation.PostMapping)")

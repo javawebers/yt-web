@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * @author sheng
+ */
 public class BaseController {
 
     private static Logger logger = LoggerFactory.getLogger(BaseController.class);

@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+/**
+ * @author sheng
+ */
 @Configuration
 public class JsonResultConfig {
     @Bean

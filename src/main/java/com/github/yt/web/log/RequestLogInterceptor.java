@@ -98,7 +98,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         RequestLogEntity requestLogEntity = requestLogThreadLocal.get();
         requestLogEntity.setRequestTime(new Date());
         requestLogEntity.setIpAddress(getIpAddress(request));
-        requestLogEntity.setRequestURI(request.getRequestURI());
+        requestLogEntity.setRequestUri(request.getRequestURI());
         requestLogEntity.setUserAgent(request.getHeader("User-Agent"));
         requestLogEntity.setClassMethodName(handlerMethod.getMethod().toString());
 
