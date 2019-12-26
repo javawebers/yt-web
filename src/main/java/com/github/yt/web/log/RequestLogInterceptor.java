@@ -1,8 +1,8 @@
 package com.github.yt.web.log;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
+import com.github.yt.web.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
@@ -110,10 +110,10 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             headerMap.put(headerName, header);
         }
         if (!headerMap.isEmpty()) {
-            requestLogEntity.setHeaderParams(JSONObject.toJSONString(headerMap));
+            requestLogEntity.setHeaderParams(JsonUtils.toJsonString(headerMap));
         }
         if (request.getParameterMap() != null && !request.getParameterMap().isEmpty()) {
-            requestLogEntity.setUrlParams(JSONObject.toJSONString(request.getParameterMap()));
+            requestLogEntity.setUrlParams(JsonUtils.toJsonString(request.getParameterMap()));
         }
         if (YtWebConfig.requestLogBody) {
             requestLogEntity.setRequestBody(getInputStr(request));
@@ -135,7 +135,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             return;
         }
         requestLogEntity.setInvokingTime((int) (System.currentTimeMillis() - requestLogEntity.getRequestTime().getTime()));
-        requestLogEntity.setResponseBody(JSONObject.toJSONString(PackageResponseBodyAdvice.resultEntityThreadLocal.get()));
+        requestLogEntity.setResponseBody(JsonUtils.toJsonString(PackageResponseBodyAdvice.resultEntityThreadLocal.get()));
         Exception e = PackageResponseBodyAdvice.exceptionThreadLocal.get();
         if (e != null) {
             requestLogEntity.setError(true);
@@ -148,7 +148,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug(JSONObject.toJSONString(requestLogEntity));
+            logger.debug(JsonUtils.toJsonString(requestLogEntity));
         }
     }
 }

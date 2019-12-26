@@ -1,10 +1,9 @@
 package com.github.yt.web.result;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.github.yt.commons.exception.BaseException;
 import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -143,7 +142,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         response.setStatus(200);
         response.addHeader("Content-type", "application/json;charset=UTF-8");
         resultEntityThreadLocal.set(resultBody);
-        String result = JSON.toJSONString(resultBody, SerializerFeature.WriteMapNullValue);
+        String result = JsonUtils.toJsonString(resultBody);
         response.getWriter().write(result);
     }
 
@@ -215,7 +214,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         beforeBodyWriteThreadLocal.set(true);
         response.getHeaders().add("Content-type", "application/json;charset=UTF-8");
         if (body instanceof String || returnType.getMethod().getReturnType().equals(String.class)) {
-            return JSON.toJSONString(resultBody, SerializerFeature.WriteMapNullValue);
+            return JsonUtils.toJsonString(resultBody);
         }
         return resultBody;
     }

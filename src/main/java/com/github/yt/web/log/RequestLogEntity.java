@@ -1,8 +1,5 @@
 package com.github.yt.web.log;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,8 +26,8 @@ public class RequestLogEntity implements Serializable {
     private String errorMessage;
     private String errorStackTrace;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss.SSS")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+//    @JSONField(format = "yyyy-MM-dd HH:mm:ss.SSS")
     private Date requestTime;
     private Integer invokingTime;
 
