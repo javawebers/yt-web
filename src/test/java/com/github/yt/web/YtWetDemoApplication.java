@@ -1,19 +1,23 @@
 package com.github.yt.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.yt.commons.exception.BaseAccidentException;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.log.RequestLog;
 import com.github.yt.web.result.PackageResponseBody;
+import com.google.common.collect.Lists;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @SpringBootApplication
@@ -98,4 +102,32 @@ public class YtWetDemoApplication {
     public String test10() {
         return null;
     }
+
+    @GetMapping("test11")
+    @PackageResponseBody(false)
+    public String test11() throws JsonProcessingException {
+        Map<String, String> map = new HashMap<>();
+        map.put("222", "222");
+        List<String> re = Arrays.asList("aaa", "bbb");
+        return new ObjectMapper().writeValueAsString(re);
+    }
+
+    @GetMapping("test12")
+    @PackageResponseBody(false)
+    public String test12() {
+        return "222";
+    }
+
+    @GetMapping("test13")
+    @PackageResponseBody(false)
+    public Date test13() {
+        return new Date();
+    }
+
+    @GetMapping("test14")
+    public Date test14() {
+        return new Date();
+    }
+
+
 }
