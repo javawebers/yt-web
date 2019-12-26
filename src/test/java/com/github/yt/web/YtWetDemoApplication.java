@@ -74,4 +74,28 @@ public class YtWetDemoApplication {
         throw new BaseAccidentException(MyBusinessExceptionEnum.CODE_1001, "没有权限");
     }
 
+    @GetMapping("test6")
+    public String test6() {
+        return "222";
+    }
+
+    @GetMapping("test7")
+    public Object test7() {
+        return "222";
+    }
+
+    @GetMapping("test8")
+    public int test8() {
+        return 233;
+    }
+
+    @GetMapping("test9")
+    public Object test9() {
+        return null;
+    }
+
+    @GetMapping("test10")
+    public String test10() {
+        return null;
+    }
 }

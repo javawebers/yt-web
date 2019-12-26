@@ -211,12 +211,12 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
         HttpResultEntity resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
         resultEntityThreadLocal.set(resultBody);
+        response.setStatusCode(HttpStatus.OK);
+        beforeBodyWriteThreadLocal.set(true);
         response.getHeaders().add("Content-type", "application/json;charset=UTF-8");
         if (body instanceof String || returnType.getMethod().getReturnType().equals(String.class)) {
             return JSON.toJSONString(resultBody, SerializerFeature.WriteMapNullValue);
         }
-        response.setStatusCode(HttpStatus.OK);
-        beforeBodyWriteThreadLocal.set(true);
         return resultBody;
     }
 }
