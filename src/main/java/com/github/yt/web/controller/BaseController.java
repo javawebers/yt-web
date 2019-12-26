@@ -28,13 +28,15 @@ public class BaseController {
     protected HttpSession session;
 
 
-    public HttpResultEntity result(){
+    protected HttpResultEntity result() {
         return HttpResultHandler.getSuccessSimpleResultBody();
     }
-    public HttpResultEntity result(Object result){
+
+    protected HttpResultEntity result(Object result) {
         return HttpResultHandler.getSuccessSimpleResultBody(result);
     }
-    public HttpResultEntity result(Object result, Object moreResult){
+
+    protected HttpResultEntity result(Object result, Object moreResult) {
         return HttpResultHandler.getSuccessMoreResultBody(result, moreResult);
     }
 
