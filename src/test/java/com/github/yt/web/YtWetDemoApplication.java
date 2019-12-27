@@ -6,17 +6,12 @@ import com.github.yt.commons.exception.BaseAccidentException;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.log.RequestLog;
 import com.github.yt.web.result.PackageResponseBody;
-import com.google.common.collect.Lists;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -39,8 +34,8 @@ public class YtWetDemoApplication {
     // 自动包装返回体2
     @GetMapping("test2")
     @RequestLog(false)
-    public Map testAutoPackage2() {
-        Map result = new HashMap<>();
+    public Map<String, String> testAutoPackage2() {
+        Map<String, String> result = new HashMap<>();
         result.put("key222", "value222");
         return result;
     }
@@ -56,7 +51,7 @@ public class YtWetDemoApplication {
     public void testUnknownException2() {
         try {
             try {
-                int a = 1 / 0;
+                System.out.println(1 / 0);
             } catch (Exception e1) {
                 throw new RuntimeException("未知异常", e1);
             }
@@ -106,10 +101,16 @@ public class YtWetDemoApplication {
     @GetMapping("test11")
     @PackageResponseBody(false)
     public String test11() throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        map.put("222", "222");
         List<String> re = Arrays.asList("aaa", "bbb");
         return new ObjectMapper().writeValueAsString(re);
+    }
+
+    @GetMapping("test112")
+    @PackageResponseBody(false)
+    public String test112() throws JsonProcessingException {
+        Map<String, String> map = new HashMap<>();
+        map.put("222", "222");
+        return new ObjectMapper().writeValueAsString(map);
     }
 
     @GetMapping("test12")
