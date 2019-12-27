@@ -125,12 +125,13 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 
         requestLogEntity.setInvokingTime((int) (System.currentTimeMillis() - requestLogEntity.getRequestTime().getTime()));
         requestLogEntity.setResponseBody(JsonUtils.toJsonString(request.getAttribute(PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY)));
-        if (ex != null) {
+        Exception e = (Exception) request.getAttribute(PackageResponseBodyAdvice.REQUEST_EXCEPTION);
+        if (e != null) {
             requestLogEntity.setError(true);
             StringWriter sw = new StringWriter();
-            ex.printStackTrace(new PrintWriter(sw, true));
+            e.printStackTrace(new PrintWriter(sw, true));
             requestLogEntity.setErrorStackTrace(sw.getBuffer().toString());
-            requestLogEntity.setErrorMessage(ex.toString());
+            requestLogEntity.setErrorMessage(e.toString());
         } else {
             requestLogEntity.setError(false);
         }

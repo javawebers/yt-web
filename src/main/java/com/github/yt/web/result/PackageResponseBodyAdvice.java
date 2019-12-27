@@ -47,6 +47,7 @@ import java.util.Objects;
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
     private static Logger logger = LoggerFactory.getLogger(PackageResponseBodyAdvice.class);
 
+    public static final String REQUEST_EXCEPTION = "yt:request_exception";
     public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
     public static final String REQUEST_BEFORE_BODY_WRITE = "yt:request_before_body_write";
 
@@ -110,11 +111,12 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @PackageResponseBody(false)
     public void handleExceptions(final Exception e, HandlerMethod handlerMethod,
                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Exception se = convertToKnownException(e);
+        request.setAttribute(REQUEST_EXCEPTION, se);
         if (!isPackageResponseBody(request, handlerMethod.getMethod())) {
             throw e;
         }
 
-        Exception se = convertToKnownException(e);
         Object beforeBodyWrite = request.getAttribute(REQUEST_BEFORE_BODY_WRITE);
         if (beforeBodyWrite != null) {
             throw se;
@@ -155,8 +157,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
         HttpResultEntity resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
-        serverHttpResponse.setStatusCode(HttpStatus.OK);
         request.setAttribute(REQUEST_BEFORE_BODY_WRITE, new Object());
+        serverHttpResponse.setStatusCode(HttpStatus.OK);
         serverHttpResponse.getHeaders().add("Content-type", "application/json;charset=UTF-8");
         if (body instanceof String || returnType.getMethod().getReturnType().equals(String.class)) {
             return JsonUtils.toJsonString(resultBody);
