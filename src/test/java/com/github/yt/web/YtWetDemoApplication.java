@@ -36,11 +36,28 @@ public class YtWetDemoApplication {
     // 自动包装返回体2
     @GetMapping("test2")
     @RequestLog(false)
-//    @PackageResponseBody(false)
-    public Map testAutoPackage2() {
+    public Map test2() {
         Map<String, String> result = new HashMap<>();
         result.put("key222", "value222");
         return result;
+    }
+
+    /**
+     * 返回map指定泛型这种情况不支持
+     *
+     * @return
+     */
+    @GetMapping("test22")
+    @RequestLog(false)
+    public Map<String, String> test22() {
+        Map<String, String> result = new HashMap<>();
+        result.put("key222", "value222");
+        return result;
+    }
+
+    @GetMapping("test23")
+    public List<String> test23() {
+        return Arrays.asList("222", "333");
     }
 
     // 统一异常处理，未知异常
