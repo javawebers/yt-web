@@ -12,7 +12,9 @@ public class JsonUtils {
 
     public static String toJsonString(Object object) {
         try {
-            return new ObjectMapper().writeValueAsString(object);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("对象转换为 json string 异常", e);
         }

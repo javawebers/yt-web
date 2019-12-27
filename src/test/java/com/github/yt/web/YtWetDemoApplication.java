@@ -3,6 +3,8 @@ package com.github.yt.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.yt.commons.exception.BaseAccidentException;
+import com.github.yt.web.entity.CircularReferenceA;
+import com.github.yt.web.entity.CircularReferenceB;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.log.RequestLog;
 import com.github.yt.web.result.PackageResponseBody;
@@ -34,7 +36,8 @@ public class YtWetDemoApplication {
     // 自动包装返回体2
     @GetMapping("test2")
     @RequestLog(false)
-    public Map<String, String> testAutoPackage2() {
+//    @PackageResponseBody(false)
+    public Map testAutoPackage2() {
         Map<String, String> result = new HashMap<>();
         result.put("key222", "value222");
         return result;
@@ -130,5 +133,15 @@ public class YtWetDemoApplication {
         return new Date();
     }
 
+    @GetMapping("test15")
+    public CircularReferenceB test15() {
+        CircularReferenceB circularReferenceB = new CircularReferenceB();
+        CircularReferenceA circularReferenceA = new CircularReferenceA();
+        circularReferenceB.setCircularReferenceA(circularReferenceA);
+        circularReferenceA.setCircularReferenceB(circularReferenceB);
+        circularReferenceB.setB("ddd");
+        circularReferenceA.setA("dsd");
+        return circularReferenceB;
+    }
 
 }

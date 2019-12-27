@@ -31,9 +31,6 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 
     /**
      * 读取post的body参数
-     *
-     * @param httpServletRequest
-     * @return
      */
     private String getInputStr(HttpServletRequest httpServletRequest) {
         if ("POST".equalsIgnoreCase(httpServletRequest.getMethod())) {
@@ -45,9 +42,6 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 
     /**
      * 获取IP地址
-     *
-     * @param request
-     * @return
      */
     private static String getIpAddress(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
@@ -63,15 +57,14 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         return ip;
     }
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    private boolean isLog(HttpServletRequest request, Object handler) {
         // 排除 swagger
         String path = request.getServletPath();
         if (path.startsWith("/swagger")) {
-            return true;
+            return false;
         }
         if (!(handler instanceof HandlerMethod)) {
-            return true;
+            return false;
         }
 
         /// 判断是否记录日志
@@ -81,19 +74,22 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         RequestLog classRequestLog = handlerMethod.getBeanType().getAnnotation(RequestLog.class);
         if (methodRequestLog != null) {
             // 判断方法配置(默认true)
-            if (!methodRequestLog.value()) {
-                return true;
-            }
+            return methodRequestLog.value();
         } else if (classRequestLog != null) {
             // 判断类配置(默认true)
-            if (!classRequestLog.value()) {
-                return true;
-            }
-        } else if (!YtWebConfig.requestLog) {
-            // 判断类配置(默认true)
+            return classRequestLog.value();
+        } else {
+            return YtWebConfig.requestLog;
+        }
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (!isLog(request, handler)) {
             return true;
         }
 
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
         requestLogThreadLocal.set(new RequestLogEntity());
         RequestLogEntity requestLogEntity = requestLogThreadLocal.get();
         requestLogEntity.setRequestTime(new Date());
@@ -103,7 +99,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         requestLogEntity.setClassMethodName(handlerMethod.getMethod().toString());
 
         Enumeration<String> headerNames = request.getHeaderNames();
-        Map<String, String> headerMap = new HashMap<>();
+        Map<String, String> headerMap = new HashMap<>(16);
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String header = request.getHeader(headerName);
@@ -128,7 +124,6 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-
         RequestLogEntity requestLogEntity = requestLogThreadLocal.get();
         requestLogThreadLocal.remove();
         if (requestLogEntity == null) {

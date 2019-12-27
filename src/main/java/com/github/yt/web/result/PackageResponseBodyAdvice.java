@@ -181,7 +181,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (path.startsWith("/actuator")) {
             return body;
         }
-//
+
         // 判断方法配置(默认true)
         PackageResponseBody methodPackageResponseBody = Objects.requireNonNull(returnType.getMethod()).getAnnotation(PackageResponseBody.class);
         PackageResponseBody classPackageResponseBody = returnType.getDeclaringClass().getAnnotation(PackageResponseBody.class);
