@@ -48,15 +48,10 @@ public class HttpResultHandler {
         return resultBody;
     }
 
-
-    public static HttpResultEntity getErrorSimpleResultBody() {
-        return getErrorSimpleResultBody(null);
-    }
-
-    public static HttpResultEntity getErrorSimpleResultBody(BaseException baseException) {
+    public static HttpResultEntity getErrorSimpleResultBody(Exception exception) {
         HttpResultEntity resultBody = new HttpResultEntity();
-        if (baseException != null) {
-            Exception exception = (Exception) baseException;
+        if (exception instanceof BaseException) {
+            BaseException baseException = (BaseException) exception;
             resultBody.put(getResultConfig().getErrorCodeField(), getResultConfig().convertErrorCode(baseException.getErrorCode()));
             resultBody.put(getResultConfig().getMessageField(), exception.getMessage());
             resultBody.put(getResultConfig().getResultField(), baseException.getErrorResult());

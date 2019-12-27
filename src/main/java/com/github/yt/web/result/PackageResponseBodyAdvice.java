@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,112 +47,18 @@ import java.util.Objects;
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
     private static Logger logger = LoggerFactory.getLogger(PackageResponseBodyAdvice.class);
 
-    // 记录异常的threadLocal
-    public static ThreadLocal<Exception> exceptionThreadLocal = new ThreadLocal<>();
-    // 记录返回结果的threadLocal
-    public static ThreadLocal<Object> resultEntityThreadLocal = new ThreadLocal<>();
-    // 异常包装的时候判断是否执行了beforeBodyWrite方法
-    public static ThreadLocal<Boolean> beforeBodyWriteThreadLocal = new ThreadLocal<>();
+    public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
+    public static final String REQUEST_BEFORE_BODY_WRITE = "yt:request_before_body_write";
 
     private ApplicationContext applicationContext;
-
-
-    public static void setExceptionThreadLocal(Exception e) {
-        exceptionThreadLocal.set(e);
-    }
-
-    public static void removeExceptionThreadLocal() {
-        exceptionThreadLocal.remove();
-    }
-
-    public static Exception getExceptionThreadLocal() {
-        return exceptionThreadLocal.get();
-    }
-
-    public static void setResultEntityThreadLocal(Object entity) {
-        resultEntityThreadLocal.set(entity);
-    }
-
-    public static void removeResultEntityThreadLocal() {
-        resultEntityThreadLocal.remove();
-    }
-
-    public static Object getResultEntityThreadLocal() {
-        return resultEntityThreadLocal.get();
-    }
-
-
-    public static void setBeforeBodyWriteThreadLocal(Boolean e) {
-        beforeBodyWriteThreadLocal.set(e);
-    }
-
-    public static void removeBeforeBodyWriteThreadLocal() {
-        beforeBodyWriteThreadLocal.remove();
-    }
-
-    public static Boolean getBeforeBodyWriteThreadLocal() {
-        return beforeBodyWriteThreadLocal.get();
-    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    @ExceptionHandler
-    @PackageResponseBody(false)
-    public void handleExceptions(final Exception e, HandlerMethod handlerMethod, HttpServletResponse response) throws Exception {
-        Exception se = convertToKnownException(e);
-        exceptionThreadLocal.set(se);
-        response.addHeader("Content-type", "text/html;charset=UTF-8");
-        Boolean beforeBodyWrite = beforeBodyWriteThreadLocal.get();
-        if (beforeBodyWrite != null) {
-            throw se;
-        }
-        PackageResponseBody methodPackageResponseBody = handlerMethod.getMethod().getAnnotation(PackageResponseBody.class);
-        PackageResponseBody classPackageResponseBody = handlerMethod.getBeanType().getAnnotation(PackageResponseBody.class);
-        // 判断方法配置(默认true)
-        if (methodPackageResponseBody != null) {
-            if (!methodPackageResponseBody.value()) {
-                throw e;
-            }
-        } else if (classPackageResponseBody != null) {
-            // 判断类配置(默认true)
-            if (!classPackageResponseBody.value()) {
-                throw e;
-            }
-        } else if (!YtWebConfig.packageResponseBody) {
-            // 判断全局配置(默认true)
-            throw e;
-        }
-
-        // 当不向上抛异常时主动打印异常
-        logger.error(se.getMessage(), se);
-
-        HttpResultEntity resultBody;
-        if (se instanceof BaseException) {
-            resultBody = HttpResultHandler.getErrorSimpleResultBody((BaseException) se);
-        } else {
-            resultBody = HttpResultHandler.getErrorSimpleResultBody();
-        }
-        // 返回异常堆栈到前端
-        if (YtWebConfig.returnStackTrace) {
-            StringWriter stringWriter = new StringWriter();
-            se.printStackTrace(new PrintWriter(stringWriter, true));
-            resultBody.put("stackTrace", stringWriter.getBuffer());
-        }
-        response.setStatus(200);
-        response.addHeader("Content-type", "application/json;charset=UTF-8");
-        resultEntityThreadLocal.set(resultBody);
-        String result = JsonUtils.toJsonString(resultBody);
-        response.getWriter().write(result);
-    }
-
     /**
      * 将异常转换为BaseException
-     *
-     * @param e
-     * @return
      */
     private Exception convertToKnownException(Exception e) {
         if (e instanceof BaseException) {
@@ -166,6 +74,69 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return e;
     }
 
+    /**
+     * 判断是否包装返回体
+     */
+    private boolean isPackageResponseBody(HttpServletRequest request, Method method) {
+        String path = request.getServletPath();
+        // 排除 actuator
+        if (path.startsWith("/actuator")) {
+            return false;
+        }
+
+        PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
+        PackageResponseBody classPackageResponseBody = method.getDeclaringClass().getAnnotation(PackageResponseBody.class);
+        if (methodPackageResponseBody != null) {
+            // 判断方法配置(默认true)
+            return methodPackageResponseBody.value();
+        } else if (classPackageResponseBody != null) {
+            // 判断类配置(默认true)
+            return classPackageResponseBody.value();
+        } else if (!YtWebConfig.packageResponseBody) {
+            // 判断全局配置(默认true)
+            return false;
+        }
+
+        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
+            return false;
+        }
+        if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
+            return false;
+        }
+        return true;
+    }
+
+    @ExceptionHandler
+    @PackageResponseBody(false)
+    public void handleExceptions(final Exception e, HandlerMethod handlerMethod,
+                                 HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (!isPackageResponseBody(request, handlerMethod.getMethod())) {
+            throw e;
+        }
+
+        Exception se = convertToKnownException(e);
+        Object beforeBodyWrite = request.getAttribute(REQUEST_BEFORE_BODY_WRITE);
+        if (beforeBodyWrite != null) {
+            throw se;
+        }
+
+        // 当不向上抛异常时主动打印异常
+        logger.error(se.getMessage(), se);
+
+        HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
+        // 返回异常堆栈到前端
+        if (YtWebConfig.returnStackTrace) {
+            StringWriter stringWriter = new StringWriter();
+            se.printStackTrace(new PrintWriter(stringWriter, true));
+            resultBody.put("stackTrace", stringWriter.getBuffer());
+        }
+        response.setStatus(200);
+        response.addHeader("Content-type", "application/json;charset=UTF-8");
+        request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
+        String result = JsonUtils.toJsonString(resultBody);
+        response.getWriter().write(result);
+    }
+
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return true;
@@ -174,45 +145,19 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest request, ServerHttpResponse response) {
-        resultEntityThreadLocal.set(body);
-        String path = ((ServletServerHttpRequest) request).getServletRequest().getServletPath();
-        // 排除 actuator
-        if (path.startsWith("/actuator")) {
-            return body;
-        }
+                                  ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
+        HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
+        request.setAttribute(REQUEST_RESULT_ENTITY, body);
 
-        // 判断方法配置(默认true)
-        PackageResponseBody methodPackageResponseBody = Objects.requireNonNull(returnType.getMethod()).getAnnotation(PackageResponseBody.class);
-        PackageResponseBody classPackageResponseBody = returnType.getDeclaringClass().getAnnotation(PackageResponseBody.class);
-
-        if (methodPackageResponseBody != null) {
-            // 判断方法配置(默认true)
-            if (!methodPackageResponseBody.value()) {
-                return body;
-            }
-        } else if (classPackageResponseBody != null) {
-            // 判断类配置(默认true)
-            if (!classPackageResponseBody.value()) {
-                return body;
-            }
-        } else if (!YtWebConfig.packageResponseBody) {
-            // 判断类配置(默认true)
-            return body;
-        }
-
-        if (returnType.getMethod().getReturnType().equals(ResponseEntity.class)) {
-            return body;
-        }
-        if (returnType.getMethod().getReturnType().equals(HttpResultEntity.class)) {
+        if (!isPackageResponseBody(request, Objects.requireNonNull(returnType.getMethod()))) {
             return body;
         }
 
         HttpResultEntity resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
-        resultEntityThreadLocal.set(resultBody);
-        response.setStatusCode(HttpStatus.OK);
-        beforeBodyWriteThreadLocal.set(true);
-        response.getHeaders().add("Content-type", "application/json;charset=UTF-8");
+        request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
+        serverHttpResponse.setStatusCode(HttpStatus.OK);
+        request.setAttribute(REQUEST_BEFORE_BODY_WRITE, new Object());
+        serverHttpResponse.getHeaders().add("Content-type", "application/json;charset=UTF-8");
         if (body instanceof String || returnType.getMethod().getReturnType().equals(String.class)) {
             return JsonUtils.toJsonString(resultBody);
         }

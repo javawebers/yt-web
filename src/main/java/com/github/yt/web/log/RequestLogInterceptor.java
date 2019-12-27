@@ -25,8 +25,6 @@ import java.util.Map;
  */
 public class RequestLogInterceptor implements HandlerInterceptor {
 
-    public static ThreadLocal<RequestLogEntity> requestLogThreadLocal = new ThreadLocal<>();
-
     private Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
 
     /**
@@ -85,14 +83,24 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (!isLog(request, handler)) {
-            return true;
-        }
+        request.setAttribute("requestTime", new Date());
+        return true;
+    }
 
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        if (!isLog(request, handler)) {
+            return;
+        }
+        Date requestTime = (Date) request.getAttribute("requestTime");
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        requestLogThreadLocal.set(new RequestLogEntity());
-        RequestLogEntity requestLogEntity = requestLogThreadLocal.get();
-        requestLogEntity.setRequestTime(new Date());
+        RequestLogEntity requestLogEntity = new RequestLogEntity();
+        requestLogEntity.setRequestTime(requestTime);
         requestLogEntity.setIpAddress(getIpAddress(request));
         requestLogEntity.setRequestUri(request.getRequestURI());
         requestLogEntity.setUserAgent(request.getHeader("User-Agent"));
@@ -114,30 +122,15 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (YtWebConfig.requestLogBody) {
             requestLogEntity.setRequestBody(getInputStr(request));
         }
-        return true;
-    }
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        RequestLogEntity requestLogEntity = requestLogThreadLocal.get();
-        requestLogThreadLocal.remove();
-        if (requestLogEntity == null) {
-            return;
-        }
         requestLogEntity.setInvokingTime((int) (System.currentTimeMillis() - requestLogEntity.getRequestTime().getTime()));
-        requestLogEntity.setResponseBody(JsonUtils.toJsonString(PackageResponseBodyAdvice.resultEntityThreadLocal.get()));
-        Exception e = PackageResponseBodyAdvice.exceptionThreadLocal.get();
-        if (e != null) {
+        requestLogEntity.setResponseBody(JsonUtils.toJsonString(request.getAttribute(PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY)));
+        if (ex != null) {
             requestLogEntity.setError(true);
             StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw, true));
+            ex.printStackTrace(new PrintWriter(sw, true));
             requestLogEntity.setErrorStackTrace(sw.getBuffer().toString());
-            requestLogEntity.setErrorMessage(e.toString());
+            requestLogEntity.setErrorMessage(ex.toString());
         } else {
             requestLogEntity.setError(false);
         }
