@@ -11,6 +11,7 @@ public enum MyBusinessExceptionEnum {
     CODE_1002("参数错误:{0}"),
     ;
 
+    public int code = 222;
     public String message;
     public String description;
     MyBusinessExceptionEnum(String message) {
