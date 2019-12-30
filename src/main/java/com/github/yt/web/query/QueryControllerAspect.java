@@ -15,10 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 分页增强
@@ -54,7 +51,7 @@ public class QueryControllerAspect {
             // 每个方法只遍历一次
             if (!methodSet.contains(currentMethod)) {
                 methodSet.add(currentMethod);
-                Class[] classes = methodSignature.getParameterTypes();
+                Class<?>[] classes = methodSignature.getParameterTypes();
                 for (int i = 0; i < classes.length; i++) {
                     if (PageQuery.class.isAssignableFrom(classes[i])) {
                         queryMethodMap.put(currentMethod, i);
@@ -63,19 +60,19 @@ public class QueryControllerAspect {
             }
             if (queryMethodMap.containsKey(currentMethod)) {
                 RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-                HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+                HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(requestAttributes)).getRequest();
                 String pageNoStr = request.getParameter(YtWebConfig.pageNoName);
                 String pageSizeStr = request.getParameter(YtWebConfig.pageSizeName);
-                PageQuery pageQuery = (PageQuery) proceedingJoinPoint.getArgs()[queryMethodMap.get(currentMethod)];
+                PageQuery<?> pageQuery = (PageQuery<?>) proceedingJoinPoint.getArgs()[queryMethodMap.get(currentMethod)];
                 int pageSizeNum;
                 try {
-                    pageSizeNum = (pageSizeStr == null || pageSizeStr.isEmpty()) ? 10 : Integer.valueOf(pageSizeStr);
+                    pageSizeNum = (pageSizeStr == null || pageSizeStr.isEmpty()) ? 10 : Integer.parseInt(pageSizeStr);
                 } catch (NumberFormatException e) {
                     pageSizeNum = 10;
                 }
                 int pageNoNum;
                 try {
-                    pageNoNum = (pageNoStr == null || pageNoStr.isEmpty()) ? 1 : Integer.valueOf(pageNoStr);
+                    pageNoNum = (pageNoStr == null || pageNoStr.isEmpty()) ? 1 : Integer.parseInt(pageNoStr);
                 } catch (NumberFormatException e) {
                     pageNoNum = 1;
                 }
