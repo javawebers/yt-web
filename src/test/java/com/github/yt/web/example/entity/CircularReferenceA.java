@@ -1,4 +1,4 @@
-package com.github.yt.web.entity;
+package com.github.yt.web.example.entity;
 
 public class CircularReferenceA {
     private String a;

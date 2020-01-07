@@ -1,10 +1,11 @@
-package com.github.yt.web.controller;
+package com.github.yt.web.example.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.yt.commons.exception.BaseAccidentException;
-import com.github.yt.web.entity.CircularReferenceA;
-import com.github.yt.web.entity.CircularReferenceB;
+import com.github.yt.web.controller.BaseController;
+import com.github.yt.web.example.entity.CircularReferenceA;
+import com.github.yt.web.example.entity.CircularReferenceB;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.log.RequestLog;
 import com.github.yt.web.result.HttpResultEntity;
