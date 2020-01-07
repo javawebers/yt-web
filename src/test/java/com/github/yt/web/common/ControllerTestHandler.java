@@ -4,8 +4,6 @@ import com.github.yt.commons.exception.ExceptionUtils;
 import com.github.yt.web.result.HttpResultHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hamcrest.Matchers;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -45,9 +43,5 @@ public class ControllerTestHandler {
     public static ResultActions get(String url) {
         return get(url, new LinkedMultiValueMap<>(), HttpResultHandler.getResultConfig().getDefaultSuccessCode());
     }
-
-
-//                    .andExpect(MockMvcResultMatchers.jsonPath(
-//            "$." + HttpResultHandler.getResultConfig().getErrorCodeField(), Matchers.equalTo(code)))
 
 }
