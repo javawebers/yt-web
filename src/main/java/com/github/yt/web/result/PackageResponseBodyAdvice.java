@@ -126,12 +126,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         logger.error(se.getMessage(), se);
 
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
-        // 返回异常堆栈到前端
-        if (YtWebConfig.returnStackTrace) {
-            StringWriter stringWriter = new StringWriter();
-            se.printStackTrace(new PrintWriter(stringWriter, true));
-            resultBody.put("stackTrace", stringWriter.getBuffer());
-        }
+
         response.setStatus(200);
         response.addHeader("Content-type", "application/json;charset=UTF-8");
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);

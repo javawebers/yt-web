@@ -6,6 +6,9 @@ import com.github.yt.commons.exception.BaseException;
 import com.github.yt.web.YtWebExceptionEnum;
 import org.springframework.stereotype.Component;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * http请求返回实体处理类
  *
@@ -13,7 +16,8 @@ import org.springframework.stereotype.Component;
  */
 public class HttpResultHandler {
     private static BaseResultConfig resultConfig;
-    public static BaseResultConfig getResultConfig(){
+
+    public static BaseResultConfig getResultConfig() {
         if (resultConfig == null) {
             try {
                 Class<?> aClass = Class.forName(YtWebConfig.resultClass);
@@ -59,6 +63,12 @@ public class HttpResultHandler {
             resultBody.put(getResultConfig().getErrorCodeField(), getResultConfig().getDefaultErrorCode());
             resultBody.put(getResultConfig().getMessageField(), getResultConfig().getDefaultErrorMessage());
             resultBody.put(getResultConfig().getResultField(), null);
+        }
+        // 返回异常堆栈到前端
+        if (YtWebConfig.returnStackTrace) {
+            StringWriter stringWriter = new StringWriter();
+            exception.printStackTrace(new PrintWriter(stringWriter, true));
+            resultBody.put(getResultConfig().getStackTraceField(), stringWriter.getBuffer());
         }
         return resultBody;
     }

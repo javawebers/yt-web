@@ -23,18 +23,32 @@ public interface BaseResultConfig {
      * @return 结果字段
      */
     String getResultField();
+
     /**
      * 更多结果字段
+     *
      * @return 更多结果字段
      */
     String getMoreResultField();
 
+    /**
+     * 异常栈字段
+     *
+     * @return 异常栈字段
+     */
+    default String getStackTraceField() {
+        return "stackTrace";
+    }
+
     // default
+
     /**
      * 默认正常返回码
+     *
      * @return 默认正常返回码
      */
     Object getDefaultSuccessCode();
+
     /**
      * 默认正常返回信息
      * @return 默认正常返回信息
@@ -58,6 +72,7 @@ public interface BaseResultConfig {
      * @return 异常码
      */
     Object convertErrorCode(Object errorCode);
+
 
 
 }
