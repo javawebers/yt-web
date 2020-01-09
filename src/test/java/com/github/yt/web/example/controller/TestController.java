@@ -8,6 +8,7 @@ import com.github.yt.web.example.entity.CircularReferenceA;
 import com.github.yt.web.example.entity.CircularReferenceB;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.log.RequestLog;
+import com.github.yt.web.query.WebQuery;
 import com.github.yt.web.result.HttpResultEntity;
 import com.github.yt.web.result.PackageResponseBody;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -83,6 +84,14 @@ public class TestController extends BaseController {
     @PackageResponseBody(false)
     public void test5() {
         throw new BaseAccidentException(MyBusinessExceptionEnum.CODE_1001, "没有权限");
+    }
+
+    @GetMapping("test51")
+    public Map test51(WebQuery query) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("pageNo", query.takePageNo());
+        result.put("pageSize", query.takePageSize());
+        return result;
     }
 
     @GetMapping("test6")

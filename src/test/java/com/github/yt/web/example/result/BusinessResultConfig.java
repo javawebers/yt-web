@@ -9,7 +9,6 @@ import com.github.yt.web.result.BaseResultConfig;
  */
 public class BusinessResultConfig implements BaseResultConfig {
 
-
     @Override
     public String getErrorCodeField() {
         return "code";
@@ -54,6 +53,4 @@ public class BusinessResultConfig implements BaseResultConfig {
     public Object convertErrorCode(Object errorCode) {
         return errorCode;
     }
-
-
 }

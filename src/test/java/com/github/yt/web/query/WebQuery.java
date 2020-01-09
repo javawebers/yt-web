@@ -2,19 +2,19 @@ package com.github.yt.web.query;
 
 import com.github.yt.commons.query.PageQuery;
 
-public class WebQuery implements PageQuery {
+public class WebQuery implements PageQuery<WebQuery> {
 
     protected Integer pageNo;
     protected Integer pageSize;
 
     @Override
-    public PageQuery<?> makePageNo(Integer pageNo) {
+    public WebQuery makePageNo(Integer pageNo) {
         this.pageNo = pageNo;
         return this;
     }
 
     @Override
-    public PageQuery<?> makePageSize(Integer pageSize) {
+    public WebQuery makePageSize(Integer pageSize) {
         this.pageSize = pageSize;
         return this;
     }

@@ -11,7 +11,7 @@ public enum MyBusinessExceptionEnum {
     CODE_1001("业务异常，{0}"),
     CODE_1002("参数错误:{0}"),
     CODE_1003("参数错误"),
-
+    CODE_1004("已知异常"),
     ;
 
     public String message;

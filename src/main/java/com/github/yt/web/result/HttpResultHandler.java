@@ -17,13 +17,16 @@ import java.io.StringWriter;
 public class HttpResultHandler {
     private static BaseResultConfig resultConfig;
 
+    private static final HttpResultHandler LOCK = new HttpResultHandler();
+
     public static BaseResultConfig getResultConfig() {
         if (resultConfig == null) {
-            try {
-                Class<?> aClass = Class.forName(YtWebConfig.resultClass);
-                resultConfig = (BaseResultConfig) aClass.newInstance();
-            } catch (Exception e) {
-                throw new BaseErrorException(YtWebExceptionEnum.CODE_79, YtWebConfig.resultClass, e);
+            synchronized (LOCK) {
+                try {
+                    resultConfig = YtWebConfig.resultClass.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException("实例化 BaseResultConfig 类异常", e);
+                }
             }
         }
         return resultConfig;
