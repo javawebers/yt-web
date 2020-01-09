@@ -287,12 +287,18 @@ public class WebQuery implements PageQuery<WebQuery> {
 ```
 * 示例
 ```java
-// 分页请求支持
-
+@GetMapping("pageQuery")
+public Map pageQuery(WebQuery query) {
+    Map<String, Object> result = new HashMap<>();
+    result.put("pageNo", query.takePageNo());
+    result.put("pageSize", query.takePageSize());
+    return result;
+}
 ```
- 分别请求：  
-http://localhost:8080/test51
-http://localhost:8080/test51?pageNo=2&pageSize=50  
+* 分别请求：  
+`  http://localhost:8080/pageQuery 
+   http://localhost:8080/pageQuery?pageNo=2&pageSize=50
+`
 ```json
 {
     "errorCode": 0,
@@ -319,8 +325,8 @@ http://localhost:8080/test51?pageNo=2&pageSize=50
 yt.page.pageNoName=myPageNo
 yt.page.pageSizeName=myPageSize
 ```
-* 请求： http://localhost:8080/test51?myPageNo=3&myPageSize=100  
-* 注：结合yt-mybatis后返回结果的pageNo、pageSize、pageTotalCount、data都可以指定。
+* 请求： http://localhost:8080/pageQuery?myPageNo=3&myPageSize=100  
+* 注：结合 `yt-mybatis` 后返回结果的 `pageNo、pageSize、pageTotalCount、data` 都可以指定。可以将此处的 `WebQuery` 替换为 `Query` 
 ```json
 {
     "errorCode": 0,
