@@ -3,17 +3,15 @@ package com.github.yt.web.controller;
 import com.github.yt.web.YtWetDemoApplication;
 import com.github.yt.web.common.ControllerTestHandler;
 import com.github.yt.web.common.ResultActionsUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
+import org.testng.annotations.Test;
 
-@RunWith(SpringRunner.class)
 @ActiveProfiles("default")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
-public class PackageResponseBodyDefaultTest {
+public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void classDefaultMethodDefault() {

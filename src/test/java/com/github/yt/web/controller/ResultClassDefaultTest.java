@@ -3,24 +3,36 @@ package com.github.yt.web.controller;
 import com.github.yt.web.YtWetDemoApplication;
 import com.github.yt.web.common.ControllerTestHandler;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
+import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.lang.reflect.Field;
 
 /**
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
-@RunWith(SpringRunner.class)
-@ActiveProfiles("default")
+@ActiveProfiles("resultClassDefault")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
-public class ResultClassDefaultTest {
+public class ResultClassDefaultTest extends AbstractTestNGSpringContextTests {
     private SimpleResultConfig resultConfig = new SimpleResultConfig();
+
+    @BeforeMethod
+    public void beforeClass() throws NoSuchFieldException, IllegalAccessException, InstantiationException {
+        // 将静态属性设置为空，避免 ActiveProfiles 不生效
+        Field field = HttpResultHandler.class.getDeclaredField("resultConfig");
+        field.setAccessible(true);
+        field.set(null, null);
+    }
 
     @Test
     public void success() throws Exception {

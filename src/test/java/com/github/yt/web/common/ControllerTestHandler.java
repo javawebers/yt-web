@@ -2,8 +2,8 @@ package com.github.yt.web.common;
 
 import com.github.yt.commons.exception.ExceptionUtils;
 import com.github.yt.web.result.HttpResultHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -12,7 +12,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 public class ControllerTestHandler {
-    private static Logger logger = LogManager.getLogger(ControllerTestHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(ControllerTestHandler.class);
 
     private static ResultActions getResultActions(String url, MultiValueMap<String, String> paramMap, Object code) {
         if (code instanceof Enum) {

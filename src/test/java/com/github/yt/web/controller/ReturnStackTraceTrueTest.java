@@ -3,23 +3,20 @@ package com.github.yt.web.controller;
 import com.github.yt.web.YtWetDemoApplication;
 import com.github.yt.web.common.ControllerTestHandler;
 import com.github.yt.web.result.HttpResultHandler;
-import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.testng.annotations.Test;
 
 /**
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
-@RunWith(SpringRunner.class)
 @ActiveProfiles("returnStackTrace")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
-public class ReturnStackTraceTrueTest {
+public class ReturnStackTraceTrueTest extends AbstractTestNGSpringContextTests {
 
 
     @Test
