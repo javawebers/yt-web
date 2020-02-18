@@ -29,45 +29,99 @@ public class PackageResponseBodyFalseTest extends AbstractTestNGSpringContextTes
     public void classDefaultMethodFalse() {
         ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodFalse");
         ResultActionsUtils.notPackaged(resultActions);
-
     }
+
 
     @Test
     public void classTrueMethodDefault() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodTrue");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodDefault");
         ResultActionsUtils.packaged(resultActions);
     }
 
     @Test
     public void classTrueMethodTrue() {
-
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodTrue");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodTrue");
         ResultActionsUtils.packaged(resultActions);
     }
 
     @Test
     public void classTrueMethodFalse() {
 
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodFalse");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodFalse");
         ResultActionsUtils.notPackaged(resultActions);
     }
 
+
     @Test
     public void classFalseMethodDefault() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodFalse");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/methodDefault");
         ResultActionsUtils.notPackaged(resultActions);
     }
 
     @Test
     public void classFalseMethodTrue() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodTrue");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/methodTrue");
         ResultActionsUtils.packaged(resultActions);
     }
 
     @Test
     public void classFalseMethodFalse() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodFalse");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/methodFalse");
         ResultActionsUtils.notPackaged(resultActions);
     }
 
+    // HttpResultEntity
+    @Test
+    public void classDefaultEntityMethodDefault() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityMethodDefault");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+
+    @Test
+    public void classDefaultEntityMethodTrue() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityMethodTrue");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+    @Test
+    public void classDefaultEntityMethodFalse() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityMethodFalse");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+
+    @Test
+    public void classTrueEntityMethodDefault() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/entityMethodDefault");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+
+    @Test
+    public void classTrueEntityMethodTrue() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/entityMethodTrue");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+
+    @Test
+    public void classTrueEntityMethodFalse() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/entityMethodFalse");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+
+
+    @Test
+    public void classFalseEntityMethodDefault() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/entityMethodDefault");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+
+    @Test
+    public void classFalseEntityMethodTrue() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/entityMethodTrue");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
+
+    @Test
+    public void classFalseEntityMethodFalse() {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/entityMethodFalse");
+        ResultActionsUtils.resultSinglePackage(resultActions);
+    }
 }

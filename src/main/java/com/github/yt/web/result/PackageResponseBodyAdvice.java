@@ -85,6 +85,12 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             return false;
         }
 
+        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
+            return false;
+        }
+        if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
+            return false;
+        }
         PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
         PackageResponseBody classPackageResponseBody = method.getDeclaringClass().getAnnotation(PackageResponseBody.class);
         if (methodPackageResponseBody != null) {
@@ -98,12 +104,6 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             return false;
         }
 
-        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
-            return false;
-        }
-        if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
-            return false;
-        }
         return true;
     }
 

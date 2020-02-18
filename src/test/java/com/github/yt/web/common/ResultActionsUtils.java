@@ -25,4 +25,18 @@ public class ResultActionsUtils {
         }
     }
 
+
+    public static void resultSinglePackage(ResultActions resultActions) {
+        try {
+            resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                    "$." + HttpResultHandler.getResultConfig().getErrorCodeField(),
+                    Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultSuccessCode())));
+            resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                    "$." + HttpResultHandler.getResultConfig().getResultField(),
+                    Matchers.equalTo(1)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
