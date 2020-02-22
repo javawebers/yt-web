@@ -7,6 +7,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -31,6 +33,7 @@ import java.util.*;
 @Order(1000)
 @Component
 public class QueryControllerAspect {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static Set<Method> methodSet = new HashSet<>();
     private static Map<Method, Integer> queryMethodMap = new HashMap<>();
@@ -80,7 +83,7 @@ public class QueryControllerAspect {
                 pageQuery.makePageSize(pageSizeNum);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("设置 Query 的 pageNo、pageSize 异常", e);
         }
         return proceedingJoinPoint.proceed();
     }

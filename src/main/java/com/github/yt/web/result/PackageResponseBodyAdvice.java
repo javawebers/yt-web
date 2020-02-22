@@ -24,8 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
@@ -45,7 +43,7 @@ import java.util.Objects;
 @Order(200)
 @ControllerAdvice
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
-    private static Logger logger = LoggerFactory.getLogger(PackageResponseBodyAdvice.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String REQUEST_EXCEPTION = "yt:request_exception";
     public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
@@ -59,64 +57,27 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     }
 
     /**
-     * 将异常转换为BaseException
+     * 全局异常处理类
+     *
+     * 配合文件上传文件最大限制时需要同时配置 spring.servlet.multipart.resolve-lazily。如下：
+     *   spring.servlet.multipart.max-file-size=1KB
+     *   spring.servlet.multipart.resolve-lazily=true
+     *
+     * @param e 异常类
+     * @param handlerMethod controller 方法
+     * @param request request
+     * @param response response
+     * @throws Exception 不进行处理的异常重新抛出
      */
-    private Exception convertToKnownException(Exception e) {
-        if (e instanceof BaseException) {
-            return e;
-        }
-        Map<String, BaseExceptionConverter> exceptionConverterMap = applicationContext.getBeansOfType(BaseExceptionConverter.class);
-        for (BaseExceptionConverter baseExceptionConverter : exceptionConverterMap.values()) {
-            Exception knownException = baseExceptionConverter.convertToBaseException(e);
-            if (knownException instanceof BaseException) {
-                return knownException;
-            }
-        }
-        return e;
-    }
-
-    /**
-     * 判断是否包装返回体
-     */
-    private boolean isPackageResponseBody(HttpServletRequest request, Method method) {
-        String path = request.getServletPath();
-        // 排除 actuator
-        if (path.startsWith("/actuator")) {
-            return false;
-        }
-
-        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
-            return false;
-        }
-        if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
-            return false;
-        }
-        PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
-        PackageResponseBody classPackageResponseBody = method.getDeclaringClass().getAnnotation(PackageResponseBody.class);
-        if (methodPackageResponseBody != null) {
-            // 判断方法配置(默认true)
-            return methodPackageResponseBody.value();
-        } else if (classPackageResponseBody != null) {
-            // 判断类配置(默认true)
-            return classPackageResponseBody.value();
-        } else if (!YtWebConfig.packageResponseBody) {
-            // 判断全局配置(默认true)
-            return false;
-        }
-
-        return true;
-    }
-
     @ExceptionHandler
     @PackageResponseBody(false)
     public void handleExceptions(final Exception e, HandlerMethod handlerMethod,
                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
         Exception se = convertToKnownException(e);
         request.setAttribute(REQUEST_EXCEPTION, se);
-        if (!isPackageResponseBody(request, handlerMethod.getMethod())) {
+        if (!packageResponseBody(request, handlerMethod.getMethod())) {
             throw e;
         }
-
         Object beforeBodyWrite = request.getAttribute(REQUEST_BEFORE_BODY_WRITE);
         if (beforeBodyWrite != null) {
             throw se;
@@ -146,7 +107,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
         request.setAttribute(REQUEST_RESULT_ENTITY, body);
 
-        if (!isPackageResponseBody(request, Objects.requireNonNull(returnType.getMethod()))) {
+        if (!packageResponseBody(request, Objects.requireNonNull(returnType.getMethod()))) {
             return body;
         }
 
@@ -160,4 +121,55 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         }
         return resultBody;
     }
+
+
+    /**
+     * 将异常转换为BaseException
+     */
+    private Exception convertToKnownException(Exception e) {
+        if (e instanceof BaseException) {
+            return e;
+        }
+        Map<String, BaseExceptionConverter> exceptionConverterMap = applicationContext.getBeansOfType(BaseExceptionConverter.class);
+        for (BaseExceptionConverter baseExceptionConverter : exceptionConverterMap.values()) {
+            Exception knownException = baseExceptionConverter.convertToBaseException(e);
+            if (knownException instanceof BaseException) {
+                return knownException;
+            }
+        }
+        return e;
+    }
+
+    /**
+     * 判断是否包装返回体
+     */
+    private boolean packageResponseBody(HttpServletRequest request, Method method) {
+        String path = request.getServletPath();
+        // 排除 actuator
+        if (path.startsWith("/actuator")) {
+            return false;
+        }
+
+        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
+            return false;
+        }
+        if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
+            return false;
+        }
+        PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
+        PackageResponseBody classPackageResponseBody = method.getDeclaringClass().getAnnotation(PackageResponseBody.class);
+        if (methodPackageResponseBody != null) {
+            // 判断方法配置(默认true)
+            return methodPackageResponseBody.value();
+        } else if (classPackageResponseBody != null) {
+            // 判断类配置(默认true)
+            return classPackageResponseBody.value();
+        } else if (!YtWebConfig.packageResponseBody) {
+            // 判断全局配置(默认true)
+            return false;
+        }
+
+        return true;
+    }
+
 }

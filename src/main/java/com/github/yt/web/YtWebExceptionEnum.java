@@ -10,6 +10,7 @@ public enum YtWebExceptionEnum {
     // business
     CODE_11("参数错误:{0}"),
     CODE_12("参数错误:{0}"),
+    CODE_13("上传的文件过大"),
 
     // error
     CODE_79("实例化resultConfig对象异常，{0}"),
