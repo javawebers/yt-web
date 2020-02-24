@@ -26,4 +26,12 @@ public class ResultClassController {
         throw new BaseAccidentException(MyBusinessExceptionEnum.CODE_1003);
     }
 
+    @GetMapping("stringResult")
+    public String stringResult() {
+        return "str1";
+    }
+    @GetMapping("stringResultError")
+    public String stringResultError() {
+        throw new RuntimeException();
+    }
 }

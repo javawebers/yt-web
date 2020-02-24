@@ -3,10 +3,14 @@ package com.github.yt.web.controller;
 import com.github.yt.web.YtWetDemoApplication;
 import com.github.yt.web.common.ControllerTestHandler;
 import com.github.yt.web.common.ResultActionsUtils;
+import com.github.yt.web.result.HttpResultHandler;
+import com.github.yt.web.result.SimpleResultConfig;
+import org.hamcrest.Matchers;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testng.annotations.Test;
 
 @ActiveProfiles("packageResponseBodyFalse")
@@ -124,4 +128,21 @@ public class PackageResponseBodyFalseTest extends AbstractTestNGSpringContextTes
         ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/entityMethodFalse");
         ResultActionsUtils.resultSinglePackage(resultActions);
     }
+
+    @Test
+    public void entityThrowException() throws Exception {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException");
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + HttpResultHandler.getResultConfig().getErrorCodeField(),
+                Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultErrorCode())));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + HttpResultHandler.getResultConfig().getMessageField(),
+                Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultErrorMessage())));
+    }
+
+    @Test(expectedExceptions = RuntimeException.class)
+    public void responseEntityThrowException() {
+        ControllerTestHandler.get("/packageClassDefault/responseEntityThrowException");
+    }
+
 }

@@ -58,15 +58,15 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
     /**
      * 全局异常处理类
-     *
+     * <p>
      * 配合文件上传文件最大限制时需要同时配置 spring.servlet.multipart.resolve-lazily。如下：
-     *   spring.servlet.multipart.max-file-size=1KB
-     *   spring.servlet.multipart.resolve-lazily=true
+     * spring.servlet.multipart.max-file-size=1KB
+     * spring.servlet.multipart.resolve-lazily=true
      *
-     * @param e 异常类
+     * @param e             异常类
      * @param handlerMethod controller 方法
-     * @param request request
-     * @param response response
+     * @param request       request
+     * @param response      response
      * @throws Exception 不进行处理的异常重新抛出
      */
     @ExceptionHandler
@@ -75,7 +75,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
         Exception se = convertToKnownException(e);
         request.setAttribute(REQUEST_EXCEPTION, se);
-        if (!packageResponseBody(request, handlerMethod.getMethod())) {
+        if (!exceptionPackageResponseBody(request, handlerMethod.getMethod())) {
             throw e;
         }
         Object beforeBodyWrite = request.getAttribute(REQUEST_BEFORE_BODY_WRITE);
@@ -107,7 +107,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
         request.setAttribute(REQUEST_RESULT_ENTITY, body);
 
-        if (!packageResponseBody(request, Objects.requireNonNull(returnType.getMethod()))) {
+        if (!successPackageResponseBody(request, Objects.requireNonNull(returnType.getMethod()))) {
             return body;
         }
 
@@ -140,36 +140,53 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return e;
     }
 
-    /**
-     * 判断是否包装返回体
-     */
-    private boolean packageResponseBody(HttpServletRequest request, Method method) {
+    private boolean exceptionPackageResponseBody(HttpServletRequest request, Method method) {
         String path = request.getServletPath();
         // 排除 actuator
         if (path.startsWith("/actuator")) {
             return false;
         }
-
         if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
             return false;
         }
+        // 返回的实体类是 HttpResultEntity 时，抛出异常也需要包装
+        if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
+            return true;
+        }
+        return packageResponseBody(method);
+    }
+
+    private boolean successPackageResponseBody(HttpServletRequest request, Method method) {
+        String path = request.getServletPath();
+        // 排除 actuator
+        if (path.startsWith("/actuator")) {
+            return false;
+        }
+        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
+            return false;
+        }
+        // 返回的实体类是 HttpResultEntity 时，正常返回就不需要包装了
         if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
             return false;
         }
+        return packageResponseBody(method);
+    }
+
+    /**
+     * 通过全局配置或者注解判断是否包装返回体
+     */
+    private boolean packageResponseBody(Method method) {
         PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
         PackageResponseBody classPackageResponseBody = method.getDeclaringClass().getAnnotation(PackageResponseBody.class);
         if (methodPackageResponseBody != null) {
             // 判断方法配置(默认true)
             return methodPackageResponseBody.value();
-        } else if (classPackageResponseBody != null) {
-            // 判断类配置(默认true)
-            return classPackageResponseBody.value();
-        } else if (!YtWebConfig.packageResponseBody) {
-            // 判断全局配置(默认true)
-            return false;
-        }
-
-        return true;
+        } else // 判断全局配置(默认true)
+            if (classPackageResponseBody != null) {
+                // 判断类配置(默认true)
+                return classPackageResponseBody.value();
+            } else {
+                return YtWebConfig.packageResponseBody;
+            }
     }
-
 }

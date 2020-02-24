@@ -3,6 +3,8 @@ package com.github.yt.web.example.controller;
 import com.github.yt.web.controller.BaseController;
 import com.github.yt.web.result.HttpResultEntity;
 import com.github.yt.web.result.PackageResponseBody;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,5 +45,15 @@ public class PackageClassDefaultController extends BaseController {
     @PackageResponseBody(false)
     public HttpResultEntity entityMethodFalse() {
         return result(1);
+    }
+
+    @GetMapping("entityThrowException")
+    public HttpResultEntity entityThrowException() {
+        throw new RuntimeException();
+    }
+
+    @GetMapping("responseEntityThrowException")
+    public ResponseEntity<?> responseEntityThrowException() {
+        throw new RuntimeException();
     }
 }

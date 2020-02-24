@@ -67,4 +67,30 @@ public class ResultClassDefaultTest extends AbstractTestNGSpringContextTests {
                 Matchers.equalTo(MyBusinessExceptionEnum.CODE_1003.message)));
     }
 
+
+    @Test
+    public void stringResult() throws Exception {
+        ResultActions resultActions = ControllerTestHandler.get("/resultClass/stringResult");
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getErrorCodeField(),
+                Matchers.equalTo(resultConfig.getDefaultSuccessCode())));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getErrorCodeField(),
+                Matchers.equalTo(resultConfig.getDefaultSuccessCode())));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getResultField(),
+                Matchers.equalTo("str1")));
+    }
+
+    @Test
+    public void stringResultError() throws Exception {
+        ResultActions resultActions = ControllerTestHandler.get("/resultClass/stringResultError");
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getErrorCodeField(),
+                Matchers.equalTo(resultConfig.getDefaultErrorCode())));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getMessageField(),
+                Matchers.equalTo(resultConfig.getDefaultErrorMessage())));
+    }
+
 }
