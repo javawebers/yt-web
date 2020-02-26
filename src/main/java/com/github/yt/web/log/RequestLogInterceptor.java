@@ -64,7 +64,9 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return false;
         }
-
+        if (!logger.isDebugEnabled()) {
+            return false;
+        }
         /// 判断是否记录日志
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         // 判断方法配置(默认true)
