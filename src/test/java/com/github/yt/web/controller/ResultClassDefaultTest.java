@@ -8,11 +8,9 @@ import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -64,7 +62,7 @@ public class ResultClassDefaultTest extends AbstractTestNGSpringContextTests {
                 Matchers.equalTo(resultConfig.convertErrorCode(MyBusinessExceptionEnum.CODE_1003.name()))));
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getMessageField(),
-                Matchers.equalTo(MyBusinessExceptionEnum.CODE_1003.message)));
+                Matchers.equalTo(MyBusinessExceptionEnum.CODE_1003.getMessage())));
     }
 
 

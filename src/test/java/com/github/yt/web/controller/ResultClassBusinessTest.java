@@ -1,6 +1,8 @@
 package com.github.yt.web.controller;
 
 
+import com.github.yt.commons.exception.ExceptionUtils;
+import com.github.yt.web.YtWebExceptionEnum;
 import com.github.yt.web.YtWetDemoApplication;
 import com.github.yt.web.common.ControllerTestHandler;
 import com.github.yt.web.example.result.BusinessResultConfig;
@@ -9,11 +11,9 @@ import com.github.yt.web.result.HttpResultHandler;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -66,7 +66,11 @@ public class ResultClassBusinessTest extends AbstractTestNGSpringContextTests {
                 Matchers.equalTo(resultConfig.convertErrorCode(MyBusinessExceptionEnum.CODE_1003.name()))));
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getMessageField(),
-                Matchers.equalTo(MyBusinessExceptionEnum.CODE_1003.message)));
+                Matchers.equalTo(MyBusinessExceptionEnum.CODE_1003.getMessage())));
     }
 
+    public static void main(String[] args) {
+        String exceptionMessage = ExceptionUtils.getExceptionMessage(YtWebExceptionEnum.CODE_11);
+        System.out.println(exceptionMessage);
+    }
 }

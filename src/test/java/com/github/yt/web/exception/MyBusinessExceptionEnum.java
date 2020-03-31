@@ -25,4 +25,8 @@ public enum MyBusinessExceptionEnum {
         this.message = message;
         this.description = description;
     }
+
+    public String getMessage() {
+        return message;
+    }
 }
