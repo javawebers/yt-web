@@ -14,8 +14,8 @@ public enum MyBusinessExceptionEnum {
     CODE_1004("已知异常"),
     ;
 
-    public String message;
-    public String description;
+    private String message;
+    private String description;
 
     MyBusinessExceptionEnum(String message) {
         this.message = message;

@@ -16,8 +16,8 @@ public enum YtWebExceptionEnum {
     CODE_79("实例化resultConfig对象异常，{0}"),
     ;
 
-    public String message;
-    public String description;
+    private String message;
+    private String description;
 
     YtWebExceptionEnum(String message) {
         this.message = message;
