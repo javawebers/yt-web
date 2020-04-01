@@ -1,10 +1,7 @@
 package com.github.yt.web.result;
 
-import com.github.yt.commons.exception.BaseErrorException;
-import com.github.yt.web.YtWebConfig;
 import com.github.yt.commons.exception.BaseException;
-import com.github.yt.web.YtWebExceptionEnum;
-import org.springframework.stereotype.Component;
+import com.github.yt.web.YtWebConfig;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
