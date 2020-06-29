@@ -1,6 +1,7 @@
 package com.github.yt.web.log;
 
 import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.util.SpringContextUtils;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -23,7 +24,8 @@ public class RequestLogFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (YtWebConfig.requestLog && YtWebConfig.requestLogBody) {
+        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+        if (ytWebConfig.getRequest().isRequestLog() && ytWebConfig.getRequest().isRequestLogBody()) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
             if ("POST".equalsIgnoreCase(httpServletRequest.getMethod())) {
                 // 防止流读取一次后就没有了, 所以需要将流继续写出去

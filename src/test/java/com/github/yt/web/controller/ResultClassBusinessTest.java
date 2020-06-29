@@ -69,8 +69,4 @@ public class ResultClassBusinessTest extends AbstractTestNGSpringContextTests {
                 Matchers.equalTo(MyBusinessExceptionEnum.CODE_1003.getMessage())));
     }
 
-    public static void main(String[] args) {
-        String exceptionMessage = ExceptionUtils.getExceptionMessage(YtWebExceptionEnum.CODE_11);
-        System.out.println(exceptionMessage);
-    }
 }

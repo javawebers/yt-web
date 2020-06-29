@@ -2,6 +2,7 @@ package com.github.yt.web.result;
 
 import com.github.yt.commons.exception.BaseException;
 import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.util.SpringContextUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -20,7 +21,8 @@ public class HttpResultHandler {
         if (resultConfig == null) {
             synchronized (LOCK) {
                 try {
-                    resultConfig = YtWebConfig.resultClass.newInstance();
+                    YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+                    resultConfig = ytWebConfig.getResult().getClazz().newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException("实例化 BaseResultConfig 类异常", e);
                 }
@@ -65,7 +67,8 @@ public class HttpResultHandler {
             resultBody.put(getResultConfig().getResultField(), null);
         }
         // 返回异常堆栈到前端
-        if (YtWebConfig.returnStackTrace) {
+        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+        if (ytWebConfig.getResult().isReturnStackTrace()) {
             StringWriter stringWriter = new StringWriter();
             exception.printStackTrace(new PrintWriter(stringWriter, true));
             resultBody.put(getResultConfig().getStackTraceField(), stringWriter.getBuffer());

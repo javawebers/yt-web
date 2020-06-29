@@ -1,76 +1,129 @@
 package com.github.yt.web;
 
 import com.github.yt.web.result.BaseResultConfig;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import com.github.yt.web.result.SimpleResultConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
+import org.springframework.stereotype.Component;
 
 /**
  * @author sheng
  */
-@Configuration
+@Component
+@ConfigurationProperties("yt")
 public class YtWebConfig {
 
-    public static boolean packageResponseBody;
-    public static boolean returnStackTrace;
-    public static Class<? extends BaseResultConfig> resultClass;
-    public static String pageNoName;
-    public static String pageSizeName;
-    public static boolean requestLog;
-    public static boolean requestLogBody;
+    private Page page = new Page();
+    private Request request = new Request();
+    private Result result = new Result();
 
-    /**
-     * 是否自动包装返回对象
-     */
-    @Value("${yt.result.packageResponseBody:true}")
-    public void setPackageResponseBody(boolean packageResponseBody) {
-        YtWebConfig.packageResponseBody = packageResponseBody;
+    public Page getPage() {
+        return page;
     }
 
-    /**
-     * 是否将异常栈信息返回到前端
-     */
-    @Value("${yt.result.returnStackTrace:false}")
-    public void setReturnStackTrace(boolean returnStackTrace) {
-        YtWebConfig.returnStackTrace = returnStackTrace;
+    public YtWebConfig setPage(Page page) {
+        this.page = page;
+        return this;
     }
 
-    /**
-     * 返回对象的属性配置
-     * 实现 BaseResultConfig
-     */
-    @Value("${yt.result.class:com.github.yt.web.result.SimpleResultConfig}")
-    public void setResultClass(Class<? extends BaseResultConfig> resultClass) {
-        YtWebConfig.resultClass = resultClass;
+    public Request getRequest() {
+        return request;
     }
 
-    /**
-     * 请求分页参数配置
-     */
-    @Value("${yt.page.pageNoName:pageNo}")
-    public void setPageNoName(String pageNoName) {
-        YtWebConfig.pageNoName = pageNoName;
+    public YtWebConfig setRequest(Request request) {
+        this.request = request;
+        return this;
     }
 
-    @Value("${yt.page.pageSizeName:pageSize}")
-    public void setPageSizeName(String pageSizeName) {
-        YtWebConfig.pageSizeName = pageSizeName;
+    public Result getResult() {
+        return result;
     }
 
-    /**
-     * 请求日志
-     * 是否记录请求日志
-     */
-    @Value("${yt.request.requestLog:true}")
-    public void setRequestLog(boolean requestLog) {
-        YtWebConfig.requestLog = requestLog;
+    public YtWebConfig setResult(Result result) {
+        this.result = result;
+        return this;
     }
 
-    /**
-     * 如果记录日志是否记录post等的body内容，记录body内容在单元测试时会有问题，取不到body的值
-     */
-    @Value("${yt.request.requestLogBody:false}")
-    public void setRequestLogBody(boolean requestLogBody) {
-        YtWebConfig.requestLogBody = requestLogBody;
+    public static class Request {
+        private boolean requestLog = true;
+        private boolean requestLogBody = false;
+
+        public boolean isRequestLog() {
+            return requestLog;
+        }
+
+        public Request setRequestLog(boolean requestLog) {
+            this.requestLog = requestLog;
+            return this;
+        }
+
+        public boolean isRequestLogBody() {
+            return requestLogBody;
+        }
+
+        public Request setRequestLogBody(boolean requestLogBody) {
+            this.requestLogBody = requestLogBody;
+            return this;
+        }
     }
+
+    public static class Result {
+        private boolean packageResponseBody = true;
+        private boolean returnStackTrace = false;
+
+        private Class<? extends BaseResultConfig> clazz = SimpleResultConfig.class;
+
+        public boolean isPackageResponseBody() {
+            return packageResponseBody;
+        }
+
+        public Result setPackageResponseBody(boolean packageResponseBody) {
+            this.packageResponseBody = packageResponseBody;
+            return this;
+        }
+
+        public boolean isReturnStackTrace() {
+            return returnStackTrace;
+        }
+
+        public Result setReturnStackTrace(boolean returnStackTrace) {
+            this.returnStackTrace = returnStackTrace;
+            return this;
+        }
+
+        public Class<? extends BaseResultConfig> getClazz() {
+            return clazz;
+        }
+
+        @DeprecatedConfigurationProperty(reason = "class 是关键字，无法作为变量名", replacement = "yt.result.class")
+        public Result setClazz(Class<? extends BaseResultConfig> clazz) {
+            this.clazz = clazz;
+            return this;
+        }
+    }
+
+    public static class Page {
+        private String pageNoName = "pageNo";
+        private String pageSizeName = "pageSize";
+
+        public String getPageNoName() {
+            return pageNoName;
+        }
+
+        public Page setPageNoName(String pageNoName) {
+            this.pageNoName = pageNoName;
+            return this;
+        }
+
+        public String getPageSizeName() {
+            return pageSizeName;
+        }
+
+        public Page setPageSizeName(String pageSizeName) {
+            this.pageSizeName = pageSizeName;
+            return this;
+        }
+    }
+
 }
 
