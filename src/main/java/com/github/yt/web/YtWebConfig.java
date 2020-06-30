@@ -47,7 +47,13 @@ public class YtWebConfig {
     }
 
     public static class Request {
+        /**
+         * 是否记录请求日志
+         */
         private boolean requestLog = true;
+        /**
+         * 是否记录 body 中信息，对文件上传有影响
+         */
         private boolean requestLogBody = false;
 
         public boolean isRequestLog() {
@@ -70,9 +76,19 @@ public class YtWebConfig {
     }
 
     public static class Result {
+        /**
+         * 是否自动包装返回体
+         * 默认为 true
+         */
         private boolean packageResponseBody = true;
+        /**
+         * 是否返回异常栈信息
+         */
         private boolean returnStackTrace = false;
 
+        /**
+         * 返回体配置类
+         */
         private Class<? extends BaseResultConfig> resultConfigClass = SimpleResultConfig.class;
 
         public boolean isPackageResponseBody() {
@@ -104,7 +120,13 @@ public class YtWebConfig {
     }
 
     public static class Page {
+        /**
+         * 页码
+         */
         private String pageNoName = "pageNo";
+        /**
+         * 每页记录数
+         */
         private String pageSizeName = "pageSize";
 
         public String getPageNoName() {
