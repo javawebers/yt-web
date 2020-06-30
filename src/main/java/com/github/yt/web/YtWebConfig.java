@@ -3,7 +3,9 @@ package com.github.yt.web;
 import com.github.yt.web.result.BaseResultConfig;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -71,7 +73,7 @@ public class YtWebConfig {
         private boolean packageResponseBody = true;
         private boolean returnStackTrace = false;
 
-        private Class<? extends BaseResultConfig> clazz = SimpleResultConfig.class;
+        private Class<? extends BaseResultConfig> resultConfigClass = SimpleResultConfig.class;
 
         public boolean isPackageResponseBody() {
             return packageResponseBody;
@@ -91,13 +93,12 @@ public class YtWebConfig {
             return this;
         }
 
-        public Class<? extends BaseResultConfig> getClazz() {
-            return clazz;
+        public Class<? extends BaseResultConfig> getResultConfigClass() {
+            return resultConfigClass;
         }
 
-        @DeprecatedConfigurationProperty(reason = "class 是关键字，无法作为变量名", replacement = "yt.result.class")
-        public Result setClazz(Class<? extends BaseResultConfig> clazz) {
-            this.clazz = clazz;
+        public Result setResultConfigClass(Class<? extends BaseResultConfig> resultConfigClass) {
+            this.resultConfigClass = resultConfigClass;
             return this;
         }
     }

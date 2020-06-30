@@ -15,14 +15,12 @@ import java.io.StringWriter;
 public class HttpResultHandler {
     private static BaseResultConfig resultConfig;
 
-    private static final HttpResultHandler LOCK = new HttpResultHandler();
-
     public static BaseResultConfig getResultConfig() {
         if (resultConfig == null) {
-            synchronized (LOCK) {
+            synchronized (HttpResultHandler.class) {
                 try {
                     YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-                    resultConfig = ytWebConfig.getResult().getClazz().newInstance();
+                    resultConfig = ytWebConfig.getResult().getResultConfigClass().newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException("实例化 BaseResultConfig 类异常", e);
                 }

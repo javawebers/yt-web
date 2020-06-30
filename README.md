@@ -226,9 +226,9 @@ public class BusinessResultConfig implements BaseResultConfig {
     }
 }
 ```
-* 在 `application.properties` 中配置 `yt.result.class` 值指定实现类
+* 在 `application.properties` 中配置 `yt.result.resultConfigClass` 值指定实现类
 ```properties
-yt.result.class=com.github.yt.web.example.result.BusinessResultConfig
+yt.result.resultConfigClass=com.github.yt.web.example.result.BusinessResultConfig
 ```
 
 * 返回示例
