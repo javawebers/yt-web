@@ -11,6 +11,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -57,6 +58,10 @@ public class ValidatorExceptionConverter implements BaseExceptionConverter {
         } else if (e instanceof MaxUploadSizeExceededException) {
             // 上传文件超过最大限制
             return new BaseAccidentException(YtWebExceptionEnum.CODE_13, e);
+        } else if (e instanceof MissingServletRequestPartException) {
+            // 缺少必要参数
+            MissingServletRequestPartException missingServletRequestPartException = (MissingServletRequestPartException) e;
+            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, "缺少必要参数 " + missingServletRequestPartException.getRequestPartName());
         }
         return e;
     }
