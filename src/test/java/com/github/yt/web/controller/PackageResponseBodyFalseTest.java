@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 @ActiveProfiles("packageResponseBodyFalse")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
+@Test(priority = 2)
 public class PackageResponseBodyFalseTest extends AbstractTestNGSpringContextTests {
 
     @Test
