@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 /**
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
-@ActiveProfiles("default")
+@ActiveProfiles("webPageQueryDefault")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
 @Test(priority = 1)
 public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {
