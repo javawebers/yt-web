@@ -3,6 +3,7 @@ package com.github.yt.web.log;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.util.JsonUtils;
+import com.github.yt.web.util.SpringContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
@@ -79,7 +80,8 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             // 判断类配置(默认true)
             return classRequestLog.value();
         } else {
-            return YtWebConfig.requestLog;
+            YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+            return ytWebConfig.getRequest().isRequestLog();
         }
     }
 
@@ -121,7 +123,9 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (request.getParameterMap() != null && !request.getParameterMap().isEmpty()) {
             requestLogEntity.setUrlParams(JsonUtils.toJsonString(request.getParameterMap()));
         }
-        if (YtWebConfig.requestLogBody) {
+
+        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+        if (ytWebConfig.getRequest().isRequestLogBody()) {
             requestLogEntity.setRequestBody(getInputStr(request));
         }
 

@@ -6,6 +6,7 @@ import com.github.yt.web.query.QueryControllerAspect;
 import com.github.yt.web.result.JsonResultConfig;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.result.ValidatorExceptionConverter;
+import com.github.yt.web.util.SpringContextUtils;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -29,6 +30,7 @@ import java.lang.annotation.*;
         RequestLogFilter.class,
         QueryControllerAspect.class,
         ValidatorExceptionConverter.class,
+        SpringContextUtils.class,
 })
 public @interface EnableYtWeb {
 }

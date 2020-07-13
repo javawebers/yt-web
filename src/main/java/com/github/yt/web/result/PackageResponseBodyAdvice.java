@@ -4,6 +4,7 @@ import com.github.yt.commons.exception.BaseException;
 import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.util.JsonUtils;
+import com.github.yt.web.util.SpringContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -186,7 +187,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                 // 判断类配置(默认true)
                 return classPackageResponseBody.value();
             } else {
-                return YtWebConfig.packageResponseBody;
+                YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+                return ytWebConfig.getResult().isPackageResponseBody();
             }
     }
 }
