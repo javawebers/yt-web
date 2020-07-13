@@ -6,6 +6,7 @@ import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.annotation.Order;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
@@ -17,6 +18,7 @@ import org.testng.annotations.Test;
  */
 @ActiveProfiles("default")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
+@Test(priority = 1)
 public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {
     private SimpleResultConfig resultConfig = new SimpleResultConfig();
 
