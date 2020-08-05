@@ -67,7 +67,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @PackageResponseBody(false)
-    public void handleExceptions2(final Throwable e) throws Throwable {
+    public void handleExceptions405(final Throwable e) throws Throwable {
         throw e;
     }
 
