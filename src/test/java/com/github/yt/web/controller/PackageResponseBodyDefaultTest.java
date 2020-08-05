@@ -6,6 +6,7 @@ import com.github.yt.web.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.annotation.Order;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
