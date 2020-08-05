@@ -52,7 +52,7 @@ public class HttpResultHandler {
         return resultBody;
     }
 
-    public static HttpResultEntity getErrorSimpleResultBody(Exception exception) {
+    public static HttpResultEntity getErrorSimpleResultBody(Throwable exception) {
         HttpResultEntity resultBody = new HttpResultEntity();
         if (exception instanceof BaseException) {
             BaseException baseException = (BaseException) exception;

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class ValidatorExceptionConverter implements BaseExceptionConverter {
 
     @Override
-    public Exception convertToBaseException(Exception e) {
+    public Throwable convertToBaseException(Throwable e) {
         if (e instanceof ConstraintViolationException) {
             // controller校验异常拦截，字段参数异常拦截
             // ConstraintViolationException是ViolationException的子类

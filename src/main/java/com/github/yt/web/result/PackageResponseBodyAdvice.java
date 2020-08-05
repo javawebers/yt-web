@@ -18,6 +18,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.HandlerMethod;
@@ -57,6 +58,19 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         this.applicationContext = applicationContext;
     }
 
+
+    /**
+     * 405 异常直接抛出
+     *
+     * @param e e
+     * @throws Throwable e
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @PackageResponseBody(false)
+    public void handleExceptions2(final Throwable e) throws Throwable {
+        throw e;
+    }
+
     /**
      * 全局异常处理类
      * <p>
@@ -72,9 +86,9 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
      */
     @ExceptionHandler
     @PackageResponseBody(false)
-    public void handleExceptions(final Exception e, HandlerMethod handlerMethod,
-                                 HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Exception se = convertToKnownException(e);
+    public void handleExceptions(final Throwable e, HandlerMethod handlerMethod,
+                                 HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        Throwable se = convertToKnownException(e);
         request.setAttribute(REQUEST_EXCEPTION, se);
         if (!exceptionPackageResponseBody(request, handlerMethod.getMethod())) {
             throw e;
@@ -95,6 +109,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         String result = JsonUtils.toJsonString(resultBody);
         response.getWriter().write(result);
     }
+
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -127,13 +142,13 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     /**
      * 将异常转换为BaseException
      */
-    private Exception convertToKnownException(Exception e) {
+    private Throwable convertToKnownException(Throwable e) {
         if (e instanceof BaseException) {
             return e;
         }
         Map<String, BaseExceptionConverter> exceptionConverterMap = applicationContext.getBeansOfType(BaseExceptionConverter.class);
         for (BaseExceptionConverter baseExceptionConverter : exceptionConverterMap.values()) {
-            Exception knownException = baseExceptionConverter.convertToBaseException(e);
+            Throwable knownException = baseExceptionConverter.convertToBaseException(e);
             if (knownException instanceof BaseException) {
                 return knownException;
             }
