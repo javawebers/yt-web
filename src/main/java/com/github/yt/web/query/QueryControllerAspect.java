@@ -1,24 +1,25 @@
 package com.github.yt.web.query;
 
-import com.github.yt.commons.query.PageQuery;
-import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.util.SpringContextUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * 分页增强
@@ -32,15 +33,16 @@ import java.util.*;
  */
 @Aspect
 @Order(1000)
-@Component
+@Slf4j
 public class QueryControllerAspect {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static Set<Method> methodSet = new HashSet<>();
-    private static Map<Method, Integer> queryMethodMap = new HashMap<>();
+    private static final Set<Method> METHOD_SET = new HashSet<>();
+    private static final Map<Method, Integer> QUERY_METHOD_MAP = new HashMap<>();
 
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) || " +
             "@annotation(org.springframework.web.bind.annotation.GetMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.PutMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.DeleteMapping) || " +
             "@annotation(org.springframework.web.bind.annotation.PostMapping)")
     public void allController() {
     }
@@ -53,22 +55,22 @@ public class QueryControllerAspect {
             // 获取实现类的方法
             Method currentMethod = target.getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
             // 每个方法只遍历一次
-            if (!methodSet.contains(currentMethod)) {
-                methodSet.add(currentMethod);
+            if (!METHOD_SET.contains(currentMethod)) {
+                METHOD_SET.add(currentMethod);
                 Class<?>[] classes = methodSignature.getParameterTypes();
                 for (int i = 0; i < classes.length; i++) {
                     if (PageQuery.class.isAssignableFrom(classes[i])) {
-                        queryMethodMap.put(currentMethod, i);
+                        QUERY_METHOD_MAP.put(currentMethod, i);
                     }
                 }
             }
-            if (queryMethodMap.containsKey(currentMethod)) {
+            if (QUERY_METHOD_MAP.containsKey(currentMethod)) {
                 RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
                 HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(requestAttributes)).getRequest();
-                YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-                String pageNoStr = request.getParameter(ytWebConfig.getPage().getPageNoName());
-                String pageSizeStr = request.getParameter(ytWebConfig.getPage().getPageSizeName());
-                PageQuery<?> pageQuery = (PageQuery<?>) proceedingJoinPoint.getArgs()[queryMethodMap.get(currentMethod)];
+                YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+                String pageNoStr = request.getParameter(ytWebProperties.getPage().getPageNoName());
+                String pageSizeStr = request.getParameter(ytWebProperties.getPage().getPageSizeName());
+                PageQuery<?> pageQuery = (PageQuery<?>) proceedingJoinPoint.getArgs()[QUERY_METHOD_MAP.get(currentMethod)];
                 int pageSizeNum;
                 try {
                     pageSizeNum = (pageSizeStr == null || pageSizeStr.isEmpty()) ? 10 : Integer.parseInt(pageSizeStr);
@@ -85,7 +87,7 @@ public class QueryControllerAspect {
                 pageQuery.makePageSize(pageSizeNum);
             }
         } catch (Exception e) {
-            logger.warn("设置 Query 的 pageNo、pageSize 异常", e);
+            log.warn("设置 Query 的 pageNo、pageSize 异常", e);
         }
         return proceedingJoinPoint.proceed();
     }

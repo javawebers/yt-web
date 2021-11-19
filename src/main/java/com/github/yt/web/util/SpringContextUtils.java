@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @author liujiasheng
  */
-@Component
+@Component("ytWebSpringContextUtils")
 public class SpringContextUtils implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;

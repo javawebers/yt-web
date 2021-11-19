@@ -1,11 +1,10 @@
 package com.github.yt.web.result;
 
-import com.github.yt.commons.exception.BaseAccidentException;
-import com.github.yt.commons.exception.BaseExceptionConverter;
-import com.github.yt.commons.util.YtStringUtils;
-import com.github.yt.web.YtWebExceptionEnum;
+import com.github.yt.web.exception.WebBusinessException;
+import com.github.yt.web.exception.WebExceptionConverter;
+import com.github.yt.web.util.YtStringUtils;
+import com.github.yt.web.enums.YtWebExceptionEnum;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,8 +23,7 @@ import java.util.stream.Collectors;
  *
  * @author liujiasheng
  */
-@Component
-public class ValidatorExceptionConverter implements BaseExceptionConverter {
+public class ValidatorExceptionConverter implements WebExceptionConverter {
 
     @Override
     public Throwable convertToBaseException(Throwable e) {
@@ -35,33 +33,33 @@ public class ValidatorExceptionConverter implements BaseExceptionConverter {
             ConstraintViolationException cve = (ConstraintViolationException) e;
             Set<ConstraintViolation<?>> cvSet = cve.getConstraintViolations();
             List<String> errorMessageList = cvSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList());
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
-        } else if (e instanceof BindException) {
-            // controller校验异常拦截，类参数异常拦截
-            BindException be = (BindException) e;
-            List<ObjectError> errorList = be.getAllErrors();
-            List<String> errorMessageList = errorList.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList());
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
+            return new WebBusinessException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
         } else if (e instanceof MethodArgumentNotValidException) {
             // controller校验异常拦截，RequestBody校验失败
             MethodArgumentNotValidException exception = (MethodArgumentNotValidException) e;
             List<ObjectError> errorList = exception.getBindingResult().getAllErrors();
             List<String> errorMessageList = errorList.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList());
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
+            return new WebBusinessException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
+        } else if (e instanceof BindException) {
+            // controller校验异常拦截，类参数异常拦截
+            BindException be = (BindException) e;
+            List<ObjectError> errorList = be.getAllErrors();
+            List<String> errorMessageList = errorList.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList());
+            return new WebBusinessException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
         } else if (e instanceof HttpMessageNotReadableException) {
             // controller校验异常拦截，RequestBody json转换异常，还没到校验步骤
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_12, e, e.getMessage());
+            return new WebBusinessException(YtWebExceptionEnum.CODE_12, e, e.getMessage());
         } else if (e instanceof MethodArgumentTypeMismatchException) {
             // 參數異常，RequestBody
             MethodArgumentTypeMismatchException se = (MethodArgumentTypeMismatchException) e;
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, "参数:" + se.getName() + ", 值:" + se.getValue());
+            return new WebBusinessException(YtWebExceptionEnum.CODE_11, e, "参数:" + se.getName() + ", 值:" + se.getValue());
         } else if (e instanceof MaxUploadSizeExceededException) {
             // 上传文件超过最大限制
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_13, e);
+            return new WebBusinessException(YtWebExceptionEnum.CODE_13, e);
         } else if (e instanceof MissingServletRequestPartException) {
             // 缺少必要参数
             MissingServletRequestPartException missingServletRequestPartException = (MissingServletRequestPartException) e;
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, "缺少必要参数 " + missingServletRequestPartException.getRequestPartName());
+            return new WebBusinessException(YtWebExceptionEnum.CODE_11, e, "缺少必要参数 " + missingServletRequestPartException.getRequestPartName());
         }
         return e;
     }

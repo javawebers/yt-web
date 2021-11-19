@@ -1,19 +1,17 @@
 package com.github.yt.web.log;
 
-import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.conf.YtWebProperties;
+import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -24,20 +22,8 @@ import java.util.Map;
  *
  * @author 刘加胜
  */
+@Slf4j
 public class RequestLogInterceptor implements HandlerInterceptor {
-
-    private Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
-
-    /**
-     * 读取post的body参数
-     */
-    private String getInputStr(HttpServletRequest httpServletRequest) {
-        if ("POST".equalsIgnoreCase(httpServletRequest.getMethod())) {
-            return HttpHelper.getBodyString(httpServletRequest);
-        }
-        return "";
-    }
-
 
     /**
      * 获取IP地址
@@ -62,10 +48,16 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (path.startsWith("/swagger")) {
             return false;
         }
+        if (path.startsWith("/v2/api-docs")) {
+            return false;
+        }
+        if (path.startsWith("/v3/api-docs")) {
+            return false;
+        }
         if (!(handler instanceof HandlerMethod)) {
             return false;
         }
-        if (!logger.isDebugEnabled()) {
+        if (!log.isDebugEnabled()) {
             return false;
         }
         /// 判断是否记录日志
@@ -80,8 +72,8 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             // 判断类配置(默认true)
             return classRequestLog.value();
         } else {
-            YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-            return ytWebConfig.getRequest().isRequestLog();
+            YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+            return ytWebProperties.getRequest().isRequestLog();
         }
     }
 
@@ -99,6 +91,9 @@ public class RequestLogInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         if (!isLog(request, handler)) {
+            return;
+        }
+        if(!log.isDebugEnabled()) {
             return;
         }
         Date requestTime = (Date) request.getAttribute("requestTime");
@@ -124,26 +119,19 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             requestLogEntity.setUrlParams(JsonUtils.toJsonString(request.getParameterMap()));
         }
 
-        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-        if (ytWebConfig.getRequest().isRequestLogBody()) {
-            requestLogEntity.setRequestBody(getInputStr(request));
-        }
-
         requestLogEntity.setInvokingTime((int) (System.currentTimeMillis() - requestLogEntity.getRequestTime().getTime()));
         requestLogEntity.setResponseBody(JsonUtils.toJsonString(request.getAttribute(PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY)));
         Exception e = (Exception) request.getAttribute(PackageResponseBodyAdvice.REQUEST_EXCEPTION);
         if (e != null) {
-            requestLogEntity.setError(true);
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw, true));
-            requestLogEntity.setErrorStackTrace(sw.getBuffer().toString());
+            requestLogEntity.setIsError(true);
+            requestLogEntity.setErrorStackTrace(HttpResultHandler.getAndSetExceptionStrToRequest(e));
             requestLogEntity.setErrorMessage(e.toString());
         } else {
-            requestLogEntity.setError(false);
+            requestLogEntity.setIsError(false);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(JsonUtils.toJsonString(requestLogEntity));
+        if (log.isDebugEnabled()) {
+            log.debug(JsonUtils.toJsonString(requestLogEntity));
         }
     }
 }

@@ -40,6 +40,7 @@ public interface BaseResultConfig {
         return "stackTrace";
     }
 
+
     // default
 
     /**
