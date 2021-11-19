@@ -1,7 +1,7 @@
 package com.github.yt.web.exception;
 
 /**
- * 业务异常对应的web异常
+ * 业务异常，最终转换为WebBusinessException异常
  * 使用场景：
  * 1、已知业务异异常
  * 2、数据校验
