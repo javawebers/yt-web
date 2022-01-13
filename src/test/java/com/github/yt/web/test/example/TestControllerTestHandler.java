@@ -6,7 +6,7 @@ import java.util.List;
 
 public class TestControllerTestHandler {
     public static void main(String[] args) {
-        Object o = new TestControllerTestHandler.User().setUsername("32咋会给你三");
+        Object o = new TestControllerTestHandler.User().setUsername("张三");
         System.out.println(ControllerTestHandler.parseToUrlPair(o));
         System.out.println(ControllerTestHandler.parseToUrlPair("localhost", o));
         System.out.println(ControllerTestHandler.parseToUrlPair("localhost?", o));
